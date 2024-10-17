@@ -1,7 +1,7 @@
 import { Alert } from '@app/components/common/alert';
 import { convertToFormData } from '@libs/util/forms/objectToFormData';
 import { useCheckout } from '@app/hooks/useCheckout';
-import { useRevalidator } from '@remix-run/react';
+import { useNavigate } from '@remix-run/react';
 import { ExpressCheckoutElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import {
   type ClickResolveDetails,
@@ -24,6 +24,7 @@ import {
 } from '@app/routes/api.checkout';
 import { StoreCart, StoreCartShippingOption, StoreOrder } from '@medusajs/types';
 import { Address } from '@libs/types';
+import { amountToStripeExpressCheckoutAmount } from '@libs/util/checkout/amountToStripeExpressCheckoutAmount';
 type ExpressCartResponse = {
   cart: StoreCart;
   setupIntent: SetupIntent;
@@ -38,7 +39,7 @@ const mapShippingRates = (shippingOptions: StoreCartShippingOption[]): ShippingR
       .map((option, index) => ({
         id: option.id ?? index.toString(),
         displayName: option.name ?? `Shipping Option ${index + 1}`,
-        amount: option.amount ?? 0,
+        amount: amountToStripeExpressCheckoutAmount(option.amount ?? 0),
       }))
       .sort((a, b) => a.amount - b.amount) ?? []
   );
@@ -54,7 +55,7 @@ const ExpressCheckoutSkeleton: FC = () => {
 };
 
 export const StripeExpressCheckoutForm: FC = () => {
-  const { revalidate } = useRevalidator();
+  const navigate = useNavigate();
   const [stripeError, setStripeError] = useState<{
     title: string;
     description: string;
@@ -70,11 +71,11 @@ export const StripeExpressCheckoutForm: FC = () => {
   );
   const [selectedExpressPaymentType, setSelectedExpressPaymentType] = useState<string | null>(null);
 
-  const { shippingOptions: initialShippingOptions, activePaymentSession } = useCheckout();
+  const { shippingOptions: initialShippingOptions, activePaymentSession, paymentProviders } = useCheckout();
 
-  const isStripeProvider = activePaymentSession?.provider_id === 'pp_stripe_stripe';
+  const isStripeAvailable = paymentProviders.some((provider) => provider.id === 'pp_stripe_stripe');
 
-  if (!cart || !isStripeProvider) return null;
+  if (!cart || !isStripeAvailable) return null;
   if (canMakePaymentStatus === 'unavailable') return null;
 
   const onCancel = async () => {
@@ -82,7 +83,7 @@ export const StripeExpressCheckoutForm: FC = () => {
     setSelectedExpressPaymentType(null);
   };
 
-  const onReady = ({ availablePaymentMethods }: StripeExpressCheckoutElementReadyEvent) => {
+  const onReady = ({ availablePaymentMethods, ...rest }: StripeExpressCheckoutElementReadyEvent) => {
     console.log('onReady called!', availablePaymentMethods);
     if (!availablePaymentMethods) {
       setCanMakePaymentStatus('unavailable');
@@ -161,7 +162,7 @@ export const StripeExpressCheckoutForm: FC = () => {
         shippingAddressId: 'new',
         shippingAddress,
         billingAddress,
-        providerId: activePaymentSession.provider_id,
+        providerId: 'pp_stripe_stripe',
         paymentMethodId: 'new',
         allowSuggestions: false,
         subaction: CheckoutAction.UPDATE_ACCOUNT_DETAILS,
@@ -193,7 +194,7 @@ export const StripeExpressCheckoutForm: FC = () => {
       const updatedCartParsed = updatedCartParsedUncased as ExpressCartResponse;
       const updatedCart = updatedCartParsed.cart;
       const updatedPaymentSession = updatedCart.payment_collection?.payment_sessions?.find(
-        ({ provider_id, status }) => provider_id === activePaymentSession.provider_id && status === 'pending',
+        ({ provider_id, status }) => provider_id === 'pp_stripe_stripe' && status === 'pending',
       );
       const updatedClientSecret = updatedPaymentSession?.data.client_secret as string;
 
@@ -275,7 +276,7 @@ export const StripeExpressCheckoutForm: FC = () => {
 
       if (!order) throw new Error('Error trying to complete checkout.');
 
-      revalidate(); // required to revalidate data on the client side + trigger redirect
+      navigate(`/checkout/success?order_id=${order.id}`);
     } catch (error: unknown) {
       console.error(error);
       const errorMessage = error instanceof Error ? error.message : 'Error trying to submit payment.';
@@ -310,7 +311,7 @@ export const StripeExpressCheckoutForm: FC = () => {
       cartId: cart.id,
       email: cart.email,
       shippingAddress: medusaAddress,
-      // subaction: CheckoutAction.UPDATE_EXPRESS_CHECKOUT_ADDRESS,
+      subaction: CheckoutAction.UPDATE_EXPRESS_CHECKOUT_ADDRESS,
     } as UpdateExpressCheckoutAddressInput);
 
     const result = await fetch('/api/checkout', {
@@ -334,7 +335,6 @@ export const StripeExpressCheckoutForm: FC = () => {
       cart: StoreCart;
       shippingOptions: StoreCartShippingOption[];
     };
-
     setCart(updatedCart);
 
     const updatedRates = mapShippingRates(updatedShippingOptions);
@@ -370,7 +370,7 @@ export const StripeExpressCheckoutForm: FC = () => {
     setCart(cartWithUpdatedShippingRate);
 
     elements?.update({
-      amount: cartWithUpdatedShippingRate.total,
+      amount: amountToStripeExpressCheckoutAmount(cartWithUpdatedShippingRate.total),
     });
 
     const resolveDetails: ClickResolveDetails = { shippingRates: updatedRates };
@@ -384,7 +384,7 @@ export const StripeExpressCheckoutForm: FC = () => {
     if (!updatedCart) return ev.reject();
 
     elements?.update({
-      amount: updatedCart.total,
+      amount: amountToStripeExpressCheckoutAmount(updatedCart.total),
     });
 
     ev.resolve();

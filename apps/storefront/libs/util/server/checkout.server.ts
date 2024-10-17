@@ -2,7 +2,7 @@ import { addressToMedusaAddress } from '@libs/util/addresses';
 import { FormValidationError } from '@libs/util/validation/validation-error';
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { UpdateAccountDetailsInput } from '@app/routes/api.checkout';
-import { checkoutAccountDetailsValidator } from '@app/components/checkout';
+import { checkoutAccountDetailsValidator, expressCheckoutAccountDetailsValidator } from '@app/components/checkout';
 import type { StoreCart, StoreCartAddress } from '@medusajs/types';
 import { updateCart } from './data/cart.server';
 
@@ -10,7 +10,9 @@ export const _updateAccountDetails = async (
   data: UpdateAccountDetailsInput,
   actionArgs: ActionFunctionArgs,
 ): Promise<{ cart: StoreCart; headers?: Headers }> => {
-  const result = await checkoutAccountDetailsValidator.validate(data);
+  const result = data.isExpressCheckout
+    ? await expressCheckoutAccountDetailsValidator.validate(data)
+    : await checkoutAccountDetailsValidator.validate(data);
 
   if (result.error) throw new FormValidationError(result.error);
 

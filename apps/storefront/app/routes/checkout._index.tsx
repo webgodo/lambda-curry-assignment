@@ -98,7 +98,7 @@ export const loader = async ({
     };
   }
 
-  const cart = await retrieveCart(request);
+  const cart = await retrieveCart(request).catch((e) => null);
 
   if (!cart) {
     throw redirect('/');

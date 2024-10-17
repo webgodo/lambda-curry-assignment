@@ -42,6 +42,17 @@ const accountDetailsSchema = Yup.object().shape({
 
 export const checkoutAccountDetailsValidator = withYup(accountDetailsSchema);
 
+// NOTE: ignored fields will be validated agains `checkoutAccountDetailsValidator` in final step of express checkout
+export const expressCheckoutAccountDetailsValidator = withYup(
+  accountDetailsSchema.shape({
+    email: emailAddressValidation.email.optional(),
+    shippingAddress: Yup.object().when('shippingAddressId', {
+      is: 'new',
+      then: () => addressValidationSchema.pick(['city', 'province', 'countryCode', 'postalCode']),
+    }),
+  }),
+);
+
 export const getCheckoutAddShippingMethodValidator = (shippingOptions: StoreCartShippingOption[]) => {
   const shippingOptionsByProfile = getShippingOptionsByProfile(shippingOptions);
   const shippingOptionsProfileIds = Object.keys(shippingOptionsByProfile);
