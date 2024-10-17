@@ -356,12 +356,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                               <ol className="flex flex-wrap items-center gap-2 text-xs text-primary">
                                 {product.tags.map((tag, tagIndex) => (
                                   <li key={tagIndex}>
-                                    <Button
-                                      as={(buttonProps) => (
-                                        <Link to={`/products/tags/${tag.value}/${tag.id}`} {...buttonProps} />
-                                      )}
-                                      className="!h-auto whitespace-nowrap !rounded !px-2 !py-1 !text-xs !font-bold bg-accent-900"
-                                    >
+                                    <Button className="!h-auto whitespace-nowrap !rounded !px-2 !py-1 !text-xs !font-bold bg-accent-900 cursor-default">
                                       {tag.value}
                                     </Button>
                                   </li>
