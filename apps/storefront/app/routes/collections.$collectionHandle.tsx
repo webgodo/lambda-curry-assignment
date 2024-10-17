@@ -7,6 +7,7 @@ import { Container } from '@app/components/common/container';
 import { Breadcrumbs } from '@app/components/common/breadcrumbs';
 import { getSelectedRegion } from '@libs/util/server/data/regions.server';
 import { getCollectionByHandle } from '@libs/util/server/data/collections.server';
+import { PageHeading } from '@app/components/sections/PageHeading';
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const region = await getSelectedRegion(request.headers);
@@ -59,6 +60,10 @@ export default function ProductCollectionRoute() {
       <div className="my-8 flex flex-wrap items-center justify-between gap-4">
         <Breadcrumbs breadcrumbs={breadcrumbs} />
       </div>
+
+      <PageHeading className="w-full text-center text-5xl xs:text-6xl md:text-8xl font-ballet my-24 font-normal lg:font-normal">
+        {data.collection.title}
+      </PageHeading>
 
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">

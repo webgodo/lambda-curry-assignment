@@ -8,11 +8,12 @@ import { redirect, data as remixData } from '@remix-run/node';
 import {
   checkoutAddDiscountCodeValidator,
   checkoutPaymentValidator,
+  checkoutRemoveDiscountCodeValidator,
   checkoutUpdateBillingAddressValidator,
   checkoutUpdateContactInfoValidator,
   getCheckoutAddShippingMethodValidator,
 } from '@app/components/checkout';
-import { StoreCart, StoreCartAddress, StoreCartResponse, StoreCartShippingOption } from '@medusajs/types';
+import { PromotionDTO, StoreCart, StoreCartAddress, StoreCartResponse, StoreCartShippingOption } from '@medusajs/types';
 import { Address, MedusaAddress } from '@libs/types';
 import {
   initiatePaymentSession,
@@ -30,6 +31,7 @@ export enum CheckoutAction {
   UPDATE_ACCOUNT_DETAILS = 'updateAccountDetails',
   ADD_SHIPPING_METHODS = 'addShippingMethods',
   ADD_DISCOUNT_CODE = 'addDiscountCode',
+  REMOVE_DISCOUNT_CODE = 'removeDiscountCode',
   COMPLETE_CHECKOUT = 'completeCheckout',
   UPDATE_BILLING_ADDRESS = 'updateBillingAddress',
 }
@@ -177,6 +179,31 @@ const addDiscountCode: ActionHandler<StoreCartResponse> = async (
   }
 };
 
+const removeDiscountCode: ActionHandler<StoreCartResponse> = async (
+  data: { cartId: string; code: string },
+  { request },
+) => {
+  const result = await checkoutRemoveDiscountCodeValidator.validate(data);
+
+  if (result.error) throw new FormValidationError(result.error);
+
+  try {
+    const cart = await retrieveCart(request);
+    const promoCodes = (cart as StoreCart & { promotions: PromotionDTO[] })?.promotions
+      ?.filter((promo) => promo.code !== data.code)
+      .map((promo) => promo.code) as string[];
+    const { cart: updatedCart } = await sdk.store.cart.update(data.cartId, {
+      promo_codes: promoCodes || [],
+    });
+
+    return { cart: updatedCart };
+  } catch (error: any) {
+    throw new FormValidationError({
+      fieldErrors: { code: 'Could not remove promo code.' },
+    });
+  }
+};
+
 const completeCheckout: ActionHandler<unknown> = async (
   { noRedirect = false, ...data }: UpdatePaymentInput,
   actionArgs,
@@ -266,6 +293,7 @@ const actions = {
   updateBillingAddress,
   addShippingMethods,
   addDiscountCode,
+  removeDiscountCode,
   completeCheckout,
 };
 

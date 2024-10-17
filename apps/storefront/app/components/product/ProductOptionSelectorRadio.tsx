@@ -36,9 +36,9 @@ export const ProductOptionSelectorRadio: FC<ProductOptionSelectorProps> = ({ opt
             disabled={optionValue.disabled}
             className={({ checked, disabled }) =>
               clsx(
-                'group border-gray-300',
-                checked ? 'ring-primary-500 ring-1' : '',
-                'active:ring-primary-500 relative col-span-1 flex h-full cursor-pointer flex-col justify-between rounded-lg border bg-white px-4 py-2 font-bold shadow-sm hover:bg-gray-100 focus:outline-none active:ring-2',
+                'group',
+                checked ? 'ring-primary-300 ring-1 bg-highlight' : 'bg-white border-primary-300',
+                'active:ring-primary-300 relative col-span-1 flex h-full cursor-pointer flex-col justify-between rounded-lg border px-4 py-2 font-bold shadow-sm hover:bg-highlight/40 focus:outline-none',
                 disabled ? 'opacity-50' : '',
               )
             }

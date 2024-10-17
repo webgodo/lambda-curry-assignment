@@ -79,6 +79,13 @@ export const checkoutAddDiscountCodeValidator = withYup(
   }),
 );
 
+export const checkoutRemoveDiscountCodeValidator = withYup(
+  Yup.object().shape({
+    ...checkoutValidation,
+    code: Yup.string(),
+  }),
+);
+
 export const selectInitialShippingAddressId = (cart: StoreCart, customer?: StoreCustomer) => {
   if (customer?.default_shipping_address_id) return customer?.default_shipping_address_id;
 
