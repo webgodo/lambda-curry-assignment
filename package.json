@@ -1,0 +1,26 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "start": "turbo start",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "medusa:setup": "turbo run medusa:setup --filter=medusa",
+    "format": "turbo run format"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.3",
+    "prettier": "^3.2.5",
+    "turbo": "^2.1.2",
+    "typescript": "^5.6.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "yarn@4.5.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
