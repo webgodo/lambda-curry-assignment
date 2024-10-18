@@ -32,7 +32,7 @@ export const getDefaultRegion = async function () {
 export const getSelectedRegion = async (headers: Headers) => {
   const regionId = await getSelectedRegionId(headers);
 
-  if (!regionId) {
+  if (regionId) {
     try {
       return await retrieveRegion(regionId);
     } catch (e) {
