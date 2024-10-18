@@ -2,9 +2,7 @@ name: Barrio Deploy
 on:
   push:
     branches:
-      - dev
-      - storefront
-      - gh-deploy
+      - main
 
 jobs:
   setup:
