@@ -34,6 +34,7 @@ export enum CheckoutAction {
   REMOVE_DISCOUNT_CODE = 'removeDiscountCode',
   COMPLETE_CHECKOUT = 'completeCheckout',
   UPDATE_BILLING_ADDRESS = 'updateBillingAddress',
+  UPDATE_EXPRESS_CHECKOUT_ADDRESS = 'updateExpressCheckoutAddress',
 }
 
 export interface UpdateContactInfoInput {
@@ -47,6 +48,7 @@ export interface UpdateAccountDetailsInput {
   email: string;
   shippingAddress: Address;
   shippingAddressId: string;
+  isExpressCheckout?: boolean;
 }
 
 export interface AddShippingMethodInput {
@@ -151,6 +153,27 @@ const addShippingMethods: ActionHandler<StoreCartResponse> = async (data: AddShi
   return { cart };
 };
 
+const updateExpressCheckoutAddress: ActionHandler<UpdateExpressCheckoutAddressResponse> = async (
+  data: UpdateExpressCheckoutAddressInput,
+  actionFnArgs,
+) => {
+  const { cart: updatedCart } = await _updateAccountDetails(
+    {
+      ...data,
+      shippingAddressId: 'new',
+      isExpressCheckout: true,
+    } as UpdateAccountDetailsInput,
+    actionFnArgs,
+  );
+
+  const shippingOptions = await listCartShippingOptions(data.cartId);
+
+  return {
+    cart: updatedCart as StoreCart,
+    shippingOptions,
+  };
+};
+
 const addDiscountCode: ActionHandler<StoreCartResponse> = async (
   data: { cartId: string; code: string },
   { request },
@@ -233,7 +256,7 @@ const completeCheckout: ActionHandler<unknown> = async (
   if (activePaymentSession?.provider_id !== data.providerId || !cart.payment_collection?.payment_sessions?.length) {
     await initiatePaymentSession(request, cart, {
       provider_id: data.providerId,
-      context: { payment_method: data.paymentMethodId },
+      data: { payment_method: data.paymentMethodId },
     });
   }
 
@@ -245,7 +268,7 @@ const completeCheckout: ActionHandler<unknown> = async (
     if (!isNewPaymentMethod && data.providerId === 'pp_stripe_stripe') {
       await initiatePaymentSession(request, cart, {
         provider_id: data.providerId,
-        context: { payment_method: data.paymentMethodId },
+        data: { payment_method: data.paymentMethodId },
       });
     }
 
@@ -264,7 +287,7 @@ const completeCheckout: ActionHandler<unknown> = async (
 
     const { order } = cartResponse;
 
-    if (noRedirect) return { order };
+    if (noRedirect) return remixData({ order }, { headers });
 
     return redirect(`/checkout/success?order_id=${order.id}`, { headers });
   } catch (error: any) {
@@ -291,6 +314,7 @@ const actions = {
   updateContactInfo,
   updateAccountDetails,
   updateBillingAddress,
+  updateExpressCheckoutAddress,
   addShippingMethods,
   addDiscountCode,
   removeDiscountCode,

@@ -1,7 +1,7 @@
 import { getShippingOptionsByProfile } from '@libs/util/checkout';
 
 import { addressValidation, emailAddressValidation, nameValidation, phoneValidation } from '@libs/util/validation';
-import { StoreCart, StoreCartShippingOption, StoreCustomer } from '@medusajs/types';
+import { StoreCart, StoreCartAddress, StoreCartShippingOption, StoreCustomer } from '@medusajs/types';
 import { withYup } from '@remix-validated-form/with-yup';
 import * as Yup from 'yup';
 
@@ -41,6 +41,17 @@ const accountDetailsSchema = Yup.object().shape({
 });
 
 export const checkoutAccountDetailsValidator = withYup(accountDetailsSchema);
+
+// NOTE: ignored fields will be validated agains `checkoutAccountDetailsValidator` in final step of express checkout
+export const expressCheckoutAccountDetailsValidator = withYup(
+  accountDetailsSchema.shape({
+    email: emailAddressValidation.email.optional(),
+    shippingAddress: Yup.object().when('shippingAddressId', {
+      is: 'new',
+      then: () => addressValidationSchema.pick(['city', 'province', 'countryCode', 'postalCode']),
+    }),
+  }),
+);
 
 export const getCheckoutAddShippingMethodValidator = (shippingOptions: StoreCartShippingOption[]) => {
   const shippingOptionsByProfile = getShippingOptionsByProfile(shippingOptions);
@@ -86,13 +97,14 @@ export const checkoutRemoveDiscountCodeValidator = withYup(
   }),
 );
 
-export const selectInitialShippingAddressId = (cart: StoreCart, customer?: StoreCustomer) => {
-  if (customer?.default_shipping_address_id) return customer?.default_shipping_address_id;
+export const selectInitialShippingAddress = (cart: StoreCart, customer?: StoreCustomer) => {
+  if (cart.shipping_address) return cart.shipping_address;
 
-  if (!customer || !customer?.addresses?.length) return 'new';
+  if (!customer || !customer?.addresses?.length) return null;
 
-  const firstAddress = customer?.addresses[0];
-  const selectedAddress = customer?.addresses.find((a) => a.id === cart.shipping_address?.id);
+  const customerAddress = customer?.default_shipping_address_id
+    ? customer.addresses?.find((a) => a.id === customer?.default_shipping_address_id)
+    : customer?.addresses?.[0];
 
-  return selectedAddress?.id || firstAddress.id;
+  return (customerAddress as StoreCartAddress) || null;
 };

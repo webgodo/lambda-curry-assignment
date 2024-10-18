@@ -192,7 +192,7 @@ export const initiatePaymentSession = withAuthHeaders(
     cart: HttpTypes.StoreCart,
     data: {
       provider_id: string;
-      context?: Record<string, unknown>;
+      data?: Record<string, unknown>;
     },
   ) => {
     return sdk.store.payment.initiatePaymentSession(cart, data, {}, authHeaders).catch(medusaError);

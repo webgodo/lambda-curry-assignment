@@ -1,5 +1,5 @@
 import { AddressElement, Elements } from '@stripe/react-stripe-js';
-import { type AddressMode, loadStripe } from '@stripe/stripe-js';
+import { type AddressMode, loadStripe, StripeAddressElementChangeEvent } from '@stripe/stripe-js';
 import { useMemo, type Dispatch, type FC, type SetStateAction } from 'react';
 import { useEnv } from '@app/hooks/useEnv';
 import { useRegion } from '@app/hooks/useRegion';
@@ -46,7 +46,34 @@ export const MedusaStripeAddress: FC<MedusaStripeAddressProps> = ({
   const { env } = useEnv();
   const { cart } = useCheckout();
   const { region } = useRegion();
-  const { settings } = useSiteDetails();
+
+  const handleChange = (
+    event:
+      | StripeAddressElementChangeEvent
+      | Pick<StripeAddressElementChangeEvent, 'complete' | 'isNewAddress' | 'value'>,
+  ) => {
+    const fullNameArray = event.value.name?.split(' ') || [];
+    const firstName = fullNameArray.slice(0, -1).join(' ');
+    const lastName = fullNameArray.slice(-1).join(' ');
+
+    // Stripe does not return province for some countries
+    const useProvincePlaceHolder = event.complete && !event.value.address.state;
+
+    setAddress({
+      address: {
+        firstName: event.value.firstName || firstName || '',
+        lastName: event.value.lastName || lastName || '',
+        address1: event.value.address.line1,
+        address2: event.value.address.line2 ?? '',
+        province: useProvincePlaceHolder ? '-' : event.value.address.state,
+        city: event.value.address.city,
+        countryCode: event.value.address.country?.toLowerCase() as string,
+        postalCode: event.value.address.postal_code,
+        phone: event.value.phone ?? '',
+      },
+      completed: event.complete,
+    });
+  };
 
   const stripePromise = useMemo(() => {
     return env.STRIPE_PUBLIC_KEY ? loadStripe(env.STRIPE_PUBLIC_KEY) : null;
@@ -108,24 +135,7 @@ export const MedusaStripeAddress: FC<MedusaStripeAddressProps> = ({
               lastName: address.lastName,
             },
           }}
-          onChange={(e) => {
-            // Stripe does not return province for some countries
-            const useProvincePlaceHolder = e.complete && !e.value.address.state;
-            setAddress({
-              address: {
-                firstName: e.value.firstName ?? '',
-                lastName: e.value.lastName ?? '',
-                address1: e.value.address.line1,
-                address2: e.value.address.line2 ?? '',
-                province: useProvincePlaceHolder ? '-' : e.value.address.state,
-                city: e.value.address.city,
-                countryCode: e.value.address.country?.toLowerCase() as string,
-                postalCode: e.value.address.postal_code,
-                phone: e.value.phone ?? '',
-              },
-              completed: e.complete,
-            });
-          }}
+          onChange={handleChange}
         />
       </Elements>
     </div>

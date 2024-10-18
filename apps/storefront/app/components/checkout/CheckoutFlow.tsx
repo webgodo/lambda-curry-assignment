@@ -5,6 +5,7 @@ import { Alert } from '@app/components/common/alert/Alert';
 import { CheckoutAccountDetails } from './CheckoutAccountDetails';
 import { CheckoutDeliveryMethod } from './CheckoutDeliveryMethod';
 import { CheckoutPayment } from './CheckoutPayment';
+import { StripeExpressCheckout } from './StripePayment/StripeExpressPayment';
 
 export const CheckoutFlow: FC = () => {
   const { customer } = useCustomer();
@@ -20,7 +21,7 @@ export const CheckoutFlow: FC = () => {
 
   return (
     <>
-      <div className="checkout-flow lg:min-h-[calc(100vh-320px)] lg:pl-8">
+      <div className="lg:min-h-[calc(100vh-320px)] lg:pl-8">
         {isLoggedIn && (
           <Alert type="info" className="mb-8">
             Checking out as:{' '}
@@ -29,6 +30,8 @@ export const CheckoutFlow: FC = () => {
             </strong>
           </Alert>
         )}
+
+        <StripeExpressCheckout cart={cart} />
 
         <CheckoutAccountDetails />
 
