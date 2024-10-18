@@ -1,7 +1,7 @@
 import { getShippingOptionsByProfile } from '@libs/util/checkout';
 
 import { addressValidation, emailAddressValidation, nameValidation, phoneValidation } from '@libs/util/validation';
-import { StoreCart, StoreCartShippingOption, StoreCustomer } from '@medusajs/types';
+import { StoreCart, StoreCartAddress, StoreCartShippingOption, StoreCustomer } from '@medusajs/types';
 import { withYup } from '@remix-validated-form/with-yup';
 import * as Yup from 'yup';
 
@@ -97,13 +97,14 @@ export const checkoutRemoveDiscountCodeValidator = withYup(
   }),
 );
 
-export const selectInitialShippingAddressId = (cart: StoreCart, customer?: StoreCustomer) => {
-  if (customer?.default_shipping_address_id) return customer?.default_shipping_address_id;
+export const selectInitialShippingAddress = (cart: StoreCart, customer?: StoreCustomer) => {
+  if (cart.shipping_address) return cart.shipping_address;
 
-  if (!customer || !customer?.addresses?.length) return 'new';
+  if (!customer || !customer?.addresses?.length) return null;
 
-  const firstAddress = customer?.addresses[0];
-  const selectedAddress = customer?.addresses.find((a) => a.id === cart.shipping_address?.id);
+  const customerAddress = customer?.default_shipping_address_id
+    ? customer.addresses?.find((a) => a.id === customer?.default_shipping_address_id)
+    : customer?.addresses?.[0];
 
-  return selectedAddress?.id || firstAddress.id;
+  return (customerAddress as StoreCartAddress) || null;
 };
