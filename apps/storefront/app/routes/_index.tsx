@@ -172,11 +172,13 @@ export default function IndexRoute() {
         </div>
 
         <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-italiana md:mr-[288px] lg:mr-[392px]">
-          The Art of Roasting
+          <span className="whitespace-nowrap">The Art of Roasting</span>
           <br />
-          <span className="font-ballet text-[150%]">at Barrio</span>
+          <span className="font-ballet text-[200%] whitespace-nowrap inline-block mt-6 mb-4 sm:mt-2 sm:-mb-4">
+            at Barrio
+          </span>
           <br />
-          Crafting with Care
+          <span className="whitespace-nowrap">Crafting with Care</span>
         </h2>
       </Container>
 

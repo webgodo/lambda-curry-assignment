@@ -39,10 +39,14 @@ export default function ProductCollectionRoute() {
 
   return (
     <Container className="pb-16">
+      <PageHeading className="w-full text-center text-5xl xs:text-6xl md:text-8xl font-ballet mt-24 font-normal lg:font-normal">
+        {collection.title}
+      </PageHeading>
+
       {collections.length > 1 && (
         <div className="flex flex-col w-full items-center">
           <div className="flex-1">
-            <div className="inline-flex gap-5 text-4xl font-italiana border-b border-primary my-5">
+            <div className="inline-flex gap-5 text-2xl font-italiana border-b border-primary mt-4 mb-8">
               {collections.map((collection) => (
                 <NavLink
                   to={`/collections/${collection.handle}`}
@@ -61,10 +65,6 @@ export default function ProductCollectionRoute() {
           </div>
         </div>
       )}
-
-      <PageHeading className="w-full text-center text-5xl xs:text-6xl md:text-8xl font-ballet my-24 font-normal lg:font-normal">
-        {collection.title}
-      </PageHeading>
 
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">

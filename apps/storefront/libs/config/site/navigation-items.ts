@@ -3,14 +3,14 @@ import { NavigationCollection, NavigationItemLocation } from '@libs/types';
 export const headerNavigationItems: NavigationCollection = [
   {
     id: 1,
-    label: 'Buy Beans',
-    url: '/products',
+    label: 'View our Blends',
+    url: '/categories/blends',
     sort_order: 0,
     location: NavigationItemLocation.header,
     new_tab: false,
   },
   {
-    id: 2,
+    id: 3,
     label: 'Our Story',
     url: '/story',
     sort_order: 1,
@@ -18,17 +18,9 @@ export const headerNavigationItems: NavigationCollection = [
     new_tab: false,
   },
   {
-    id: 3,
-    label: 'Location',
-    url: '/location',
-    sort_order: 1,
-    location: NavigationItemLocation.header,
-    new_tab: false,
-  },
-  {
-    id: 4,
-    label: 'How To Brew',
-    url: '/how-to-brew',
+    id: 2,
+    label: 'Shop All',
+    url: '/products',
     sort_order: 1,
     location: NavigationItemLocation.header,
     new_tab: false,
@@ -38,7 +30,7 @@ export const headerNavigationItems: NavigationCollection = [
 export const footerNavigationItems: NavigationCollection = [
   {
     id: 1,
-    label: 'Our Beans',
+    label: 'Shop All',
     url: '/products',
     location: NavigationItemLocation.footer,
     sort_order: 1,

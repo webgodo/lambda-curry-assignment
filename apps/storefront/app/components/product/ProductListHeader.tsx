@@ -16,7 +16,7 @@ export const ProductListHeader: FC<ProductListHeaderProps> = ({ heading, childre
   if (!(heading || children) && !text && !actions?.length && !customActions) return null;
 
   return (
-    <header className="mb-4 flex flex-col items-start gap-2 md:mb-6 md:flex-row md:gap-4 lg:mb-8">
+    <header className="mb-4 flex flex-col items-start xs:items-end gap-2 md:mb-6 xs:flex-row md:gap-4 lg:mb-8">
       <div className="w-full flex-1 md:w-auto">
         <div className="inline-grid !max-w-prose gap-6">
           {(heading || children) && (
