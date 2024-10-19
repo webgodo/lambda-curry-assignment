@@ -42,18 +42,20 @@ export default function IndexRoute() {
         }}
       />
 
-      <Container className="p-14 pt-60 lg:pt-24 relative flex flex-col items-center lg:flex-row">
-        <div className="absolute w-80 left-4 -top-[200px] md:-top-[240px] lg:left-20 lg:w-[420px]">
+      <Container className="p-14 md:pt-1 lg:pt-24 relative flex flex-col-reverse items-center lg:flex-row">
+        <div className="md:absolute w-80 md:left-4 md:-top-[240px] lg:left-20 lg:w-[420px]">
           <Image src="/assets/images/header-image-1.png" alt="Barrio background" height={520} width={420} />
         </div>
 
-        <div className="lg:w-full flex flex-col justify-center max-lg:items-center">
-          <div className="w-full flex text-center lg:text-left">
-            <h2 className="mx-auto lg:mx-0 lg:ml-auto text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-ballet">
+        <div className="md:w-full flex flex-col justify-center max-md:items-center">
+          <div className="w-full flex text-center md:text-left">
+            <h2 className="mx-auto md:ml-[32%] lg:ml-[37%] xl:ml-[30%] lg:mr-auto text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-ballet mt-12">
               Building Community
             </h2>
           </div>
-          <p className="font-italiana text-6xl lg:text-7xl mt-6 sm:mt-10 lg:mt-24">one cup at a time</p>
+          <p className="font-italiana text-6xl lg:text-7xl xl:text-8xl mt-6 lg:mt-8 xl:mt-10 max-sm:text-center">
+            one cup at a time
+          </p>
         </div>
       </Container>
 
@@ -164,24 +166,24 @@ export default function IndexRoute() {
         }}
       />
 
-      <Container className="flex flex-col-reverse gap-8 items-center lg:items-start lg:flex-row p-14 lg:pt-24 lg:px-24 relative lg:min-h-[354px]">
+      <Container className="flex flex-col-reverse gap-8 items-center md:items-end p-6 lg:pt-24 lg:px-24 relative lg:min-h-[354px] min-h-[276px]">
         <div className="flex justify-center md:justify-end md:absolute md:-top-[30%] w-60 md:w-80 md:right-0 lg:right-20 lg:w-[420px]">
           <Image src="/assets/images/header-image-2.png" alt="Barrio background" height={520} width={420} />
         </div>
 
-        <div className="w-full flex justify-center md:justify-start text-center md:text-left">
-          <h2 className="md:w-3/5 xl:w-4/5 text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-italiana">
-            The Art of Roasting
-            <br />
-            <span className="font-ballet text-[150%]">at Barrio</span>
-            <br />
-            Crafting with Care
-          </h2>
-        </div>
+        <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-italiana md:mr-[288px] lg:mr-[392px]">
+          <span className="whitespace-nowrap">The Art of Roasting</span>
+          <br />
+          <span className="font-ballet text-[200%] whitespace-nowrap inline-block mt-6 mb-4 sm:mt-2 sm:-mb-4">
+            at Barrio
+          </span>
+          <br />
+          <span className="whitespace-nowrap">Crafting with Care</span>
+        </h2>
       </Container>
 
       <SideBySide
-        className="p-14 md:pt-16 lg:pt-24 lg:px-24"
+        className="p-14 md:pt-12 lg:px-24"
         left={
           <div className="w-full h-full flex items-center justify-center">
             <div

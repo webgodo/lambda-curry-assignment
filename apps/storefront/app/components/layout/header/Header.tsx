@@ -75,15 +75,12 @@ export const Header: FC<HeaderProps> = () => {
                           {...navItemProps}
                           newTab={new_tab}
                           className={({ isActive }) =>
-                            clsx('my-4 flex items-center whitespace-nowrap text-base font-normal hover:underline', {
+                            clsx('my-4 flex items-center whitespace-nowrap text-base font-normal', {
+                              'hover:underline': !isActive,
                               'border-b-primary-200 border-b-2':
                                 isActive &&
                                 (!navItemProps.url.includes('#') ||
                                   activeSection === navItemProps.url.split('#')[1].split('?')[0]),
-                              'hidden 2xl:inline-block': index === 5,
-                              'hidden xl:inline-block': index === 3 || index === 4,
-                              'hidden lg:inline-block': index === 2,
-                              'hidden md:inline-block': index === 1,
                             })
                           }
                           prefetch="intent"
@@ -99,12 +96,12 @@ export const Header: FC<HeaderProps> = () => {
                       {!!cart && hasProducts && (
                         <IconButton
                           aria-label="open shopping cart"
-                          className="text-white hidden sm:mr-0.5 sm:inline-flex"
+                          className="text-white hidden sm:mr-0.5 sm:inline-flex focus-within:!bg-primary-50"
                           icon={(iconProps) => (
                             <div className="relative">
                               <ShoppingBagIcon
                                 {...iconProps}
-                                className={clsx(iconProps.className, 'hover:!bg-primary-50 focus:!bg-primary-50')}
+                                className={clsx(iconProps.className, 'hover:!bg-primary-50')}
                               />
                               {cart.items && cart.items.length > 0 && (
                                 <span className="bg-primary-500 absolute -top-1 left-full -ml-2 flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-xs font-bold text-white">
