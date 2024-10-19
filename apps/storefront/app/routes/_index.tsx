@@ -166,24 +166,22 @@ export default function IndexRoute() {
         }}
       />
 
-      <Container className="flex flex-col-reverse gap-8 items-center lg:items-start lg:flex-row p-14 lg:pt-24 lg:px-24 relative lg:min-h-[354px]">
+      <Container className="flex flex-col-reverse gap-8 items-center md:items-end p-6 lg:pt-24 lg:px-24 relative lg:min-h-[354px] min-h-[276px]">
         <div className="flex justify-center md:justify-end md:absolute md:-top-[30%] w-60 md:w-80 md:right-0 lg:right-20 lg:w-[420px]">
           <Image src="/assets/images/header-image-2.png" alt="Barrio background" height={520} width={420} />
         </div>
 
-        <div className="w-full flex justify-center md:justify-start text-center md:text-left">
-          <h2 className="md:w-3/5 xl:w-4/5 text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-italiana">
-            The Art of Roasting
-            <br />
-            <span className="font-ballet text-[150%]">at Barrio</span>
-            <br />
-            Crafting with Care
-          </h2>
-        </div>
+        <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-italiana md:mr-[288px] lg:mr-[392px]">
+          The Art of Roasting
+          <br />
+          <span className="font-ballet text-[150%]">at Barrio</span>
+          <br />
+          Crafting with Care
+        </h2>
       </Container>
 
       <SideBySide
-        className="p-14 md:pt-16 lg:pt-24 lg:px-24"
+        className="p-14 md:pt-12 lg:px-24"
         left={
           <div className="w-full h-full flex items-center justify-center">
             <div
