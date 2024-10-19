@@ -33,7 +33,7 @@ export default function IndexRoute() {
         actions={[
           {
             label: 'Discover Our Blends',
-            url: '/products',
+            url: '/categories/blends',
           },
         ]}
         image={{
