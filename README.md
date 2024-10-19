@@ -1,6 +1,9 @@
-# Medusa Starter with Remix Storefront
+# Medusa 2 Starter with Remix Storefront
 
 This is a starter project for an e-commerce application using Medusa as the backend and Remix as the storefront, all set up in a Turborepo monorepo structure.
+
+https://github.com/user-attachments/assets/3c10d2f5-91b8-405c-a47c-c8ae8a4be575
+
 
 ## Project Overview
 
