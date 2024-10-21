@@ -1,26 +1,51 @@
-# Medusa 2 Starter with Remix Storefront
+<h1 align="center">
+  <a href="https://barrio.lambdacurry.dev"><img src="https://barrio.lambdacurry.dev/favicon.svg" alt="Medusa 2 Starter with Remix Storefront" width="80" height="80"></a>
+  <br>
+  <br>
+  Medusa 2 Starter with Remix Storefront
+  <br>
+</h1>
 
-This is a starter project for an e-commerce application using Medusa as the backend and Remix as the storefront, all set up in a Turborepo monorepo structure.
+
+This is an official Turborepo monorepo integrating a Medusa2 backend with a Remix frontend. Showcasing a Coffee Roast themed dynamic storefront, it features Stripe payment integration, scalability with unlimited products and categories, and a developer-friendly setup using TypeScript and Biome. Ideal for rapidly building dynamic, scalable e-commerce stores.
 
 https://github.com/user-attachments/assets/3c10d2f5-91b8-405c-a47c-c8ae8a4be575
 
+## Table
 
-## Project Overview
-
-This monorepo includes:
-
-- `medusa`: A Medusa backend application
-- `storefront`: A Remix-based storefront application
-- Shared packages and configurations
+- [Prerequisites](#prerequisites)
+- [Project Overview](#project-overview)
+  - [Key Features](#key-features)
+  - [Demo](#demo)
+- [Getting Started](#getting-started)
+- [Local Development Setup](#local-development-setup)
+- [Resetting the Database](#resetting-the-database)
+- [Useful Links](#useful-links)
+- [Contributors](#contributors)
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
-- Node.js 20+
-- Yarn 4.5.0
-- Remix
-- Docker and Docker Compose
+- ✅ Node.js 20+
+- ✅ Yarn 4.5.0
+- ✅ Remix
+- ✅ Docker and Docker Compose
+
+
+## Project Overview
+
+### Key Features
+
+- **Dynamic Storefront**: Leverages Medusa2's robust headless commerce capabilities and Remix's fast, data-driven UI for modern e-commerce experiences.
+- **Advanced Payment Integration**: Out-of-the-box support for Stripe enables secure and reliable transaction processing.
+- **Scalability**: Supports unlimited products, collections, categories, and tags, accommodating businesses as they expand their inventory.
+- **Developer Experience**: Built with TypeScript and Biome, enhancing code quality, consistency, and maintainability.
+
+## Demo
+
+You can view a live demo of the project [here](https://barrio.lambdacurry.dev/).
+
 
 ## Getting Started
 
@@ -85,3 +110,12 @@ In order to reset the database, follow the steps from 3 to 7 in the Local Develo
 - [Medusa Documentation](https://docs.medusajs.com/)
 - [Remix Documentation](https://remix.run/docs/en/main)
 - [Turborepo Documentation](https://turbo.build/repo/docs)
+
+
+## Contributors
+Made with ❤️ by the Lambda Curry team.
+
+
+<a href = "https://github.com/lambda-curry/medusa2-starter/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=lambda-curry/medusa2-starter"/>
+</a>
