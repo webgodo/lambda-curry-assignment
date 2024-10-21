@@ -14,7 +14,7 @@ const selectStructureClassNames = (variant: ButtonProps['variant']) => {
     case 'ghost':
       return '';
     default:
-      return 'inline-flex items-center gap-2 rounded-full font-bold border';
+      return 'inline-flex items-center gap-2 rounded-full border';
   }
 };
 
