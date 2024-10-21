@@ -71,14 +71,14 @@ Before you begin, ensure you have the following installed:
    - `STRIPE_PUBLIC_KEY` # starts with `pk_`
    - `STRIPE_SECRET_KEY` # starts with `sk_`
 
-7. Restart the Remix server:
+7. Restart your storefront and medusa backend:
       ```
       yarn dev
       ```
 
 
 ## Resetting the Database
-In order to reset the database, follow the steps from 4 to 6 in the Local Development Setup section.
+In order to reset the database, follow the steps from 3 to 7 in the Local Development Setup section.
 
 ## Useful Links
 
