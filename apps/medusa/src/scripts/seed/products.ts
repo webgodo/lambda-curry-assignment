@@ -1,8 +1,4 @@
-import {
-  CreateProductWorkflowInputDTO,
-  ProductCollectionDTO,
-  ProductTagDTO,
-} from '@medusajs/framework/types';
+import { CreateProductWorkflowInputDTO, ProductCollectionDTO, ProductTagDTO } from '@medusajs/framework/types';
 import { ProductStatus } from '@medusajs/utils';
 
 const buildBaseProductData = ({
@@ -89,16 +85,10 @@ export const seedProducts = ({
       'Dive into the rich tapestry of flavors with our Barrio Blend, a masterful medium-dark roast that harmonizes a symphony of taste. Each sip reveals layers of complexity, with a gentle sweetness that dances on the palate, making it an exquisite choice for those who cherish a well-rounded coffee experience.',
     handle: 'barrio-blend-medium-roast',
     status: ProductStatus.PUBLISHED,
-    category_ids: categories
-      .filter(({ name }) => name === 'Blends')
-      .map(({ id }) => id),
-    tag_ids: tags
-      .filter(t => ['Best Seller', 'Latin America', 'Africa'].includes(t.value))
-      .map(t => t.id),
-    thumbnail:
-      'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Barrio-Blend.jpg',
-    collection_id: collections.find(({ title }) => title === 'Medium Roasts')
-      ?.id,
+    category_ids: categories.filter(({ name }) => name === 'Blends').map(({ id }) => id),
+    tag_ids: tags.filter((t) => ['Best Seller', 'Latin America', 'Africa'].includes(t.value)).map((t) => t.id),
+    thumbnail: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Barrio-Blend.jpg',
+    collection_id: collections.find(({ title }) => title === 'Medium Roasts')?.id,
     images: [
       {
         url: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Barrio-Blend.jpg',
@@ -120,12 +110,9 @@ export const seedProducts = ({
     handle: 'midnight-dark-roast',
     status: ProductStatus.PUBLISHED,
     collection_id: collections.find(({ title }) => title === 'Dark Roasts')?.id,
-    category_ids: categories
-      .filter(({ name }) => name === 'Blends')
-      .map(({ id }) => id),
-    tag_ids: tags.filter(t => ['Brazil'].includes(t.value)).map(t => t.id),
-    thumbnail:
-      'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Midnight-Dark-Roast.jpg',
+    category_ids: categories.filter(({ name }) => name === 'Blends').map(({ id }) => id),
+    tag_ids: tags.filter((t) => ['Brazil'].includes(t.value)).map((t) => t.id),
+    thumbnail: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Midnight-Dark-Roast.jpg',
     images: [
       {
         url: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Midnight-Dark-Roast.jpg',
@@ -146,16 +133,10 @@ export const seedProducts = ({
       'Embrace the dawn with our Sunrise Single-Origin, a light roast that celebrates the unique terroir of its beans. This coffee is a vibrant expression of bright, floral notes and a subtle sweetness, offering a refreshing and invigorating experience that is ideal for starting your day or enjoying a serene afternoon.',
     handle: 'sunrise-single-origin-light-roast',
     status: ProductStatus.PUBLISHED,
-    collection_id: collections.find(({ title }) => title === 'Light Roasts')
-      ?.id,
-    category_ids: categories
-      .filter(({ name }) => name === 'Single Origin')
-      .map(({ id }) => id),
-    tag_ids: tags
-      .filter(t => ['Best Seller', 'Ethiopia'].includes(t.value))
-      .map(t => t.id),
-    thumbnail:
-      'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Sunrise-Single.jpg',
+    collection_id: collections.find(({ title }) => title === 'Light Roasts')?.id,
+    category_ids: categories.filter(({ name }) => name === 'Single Origin').map(({ id }) => id),
+    tag_ids: tags.filter((t) => ['Best Seller', 'Ethiopia'].includes(t.value)).map((t) => t.id),
+    thumbnail: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Sunrise-Single.jpg',
     images: [
       {
         url: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Sunrise-Single.jpg',
@@ -175,15 +156,11 @@ export const seedProducts = ({
     description:
       'Uncover the smooth elegance of our Barrio Decaf, a medium roast crafted for those who desire the rich essence of coffee without the caffeine. This blend is a delicate balance of flavors, with a hint of sweetness that provides a satisfying and delightful experience, any time of the day or night.',
     handle: 'barrio-decaf-medium-roast',
-    collection_id: collections.find(({ title }) => title === 'Medium Roasts')
-      ?.id,
-    category_ids: categories
-      .filter(({ name }) => name === 'Blends')
-      .map(({ id }) => id),
+    collection_id: collections.find(({ title }) => title === 'Medium Roasts')?.id,
+    category_ids: categories.filter(({ name }) => name === 'Blends').map(({ id }) => id),
     status: ProductStatus.PUBLISHED,
-    tag_ids: tags.filter(t => ['Columbia'].includes(t.value)).map(t => t.id),
-    thumbnail:
-      'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Barrio-Decaf.jpg',
+    tag_ids: tags.filter((t) => ['Colombia'].includes(t.value)).map((t) => t.id),
+    thumbnail: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Barrio-Decaf.jpg',
     images: [
       {
         url: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Barrio-Decaf.jpg',
@@ -203,15 +180,11 @@ export const seedProducts = ({
     description:
       'Escape to a tropical paradise with our Coconut Mocha Delight, a medium roast that marries the rich, robust flavors of coffee with the exotic allure of coconut and a whisper of chocolate. This enchanting blend is a journey of taste, perfect for those seeking a unique and indulgent coffee experience.',
     handle: 'coconut-mocha-delight-medium-roast',
-    collection_id: collections.find(({ title }) => title === 'Medium Roasts')
-      ?.id,
-    category_ids: categories
-      .filter(({ name }) => name === 'Blends')
-      .map(({ id }) => id),
+    collection_id: collections.find(({ title }) => title === 'Medium Roasts')?.id,
+    category_ids: categories.filter(({ name }) => name === 'Blends').map(({ id }) => id),
     status: ProductStatus.PUBLISHED,
-    tag_ids: tags.filter(t => ['Columbia'].includes(t.value)).map(t => t.id),
-    thumbnail:
-      'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Coconut-Mocha.jpg',
+    tag_ids: tags.filter((t) => ['Colombia'].includes(t.value)).map((t) => t.id),
+    thumbnail: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Coconut-Mocha.jpg',
     images: [
       {
         url: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Coconut-Mocha.jpg',
@@ -233,13 +206,10 @@ export const seedProducts = ({
       'Embark on a daring flavor journey with our Chili Choco Spice, a dark roast that boldly combines the fiery warmth of chili with the decadent richness of chocolate. This adventurous blend is a thrilling experience for the palate, offering a spicy-sweet symphony that is both exciting and deeply satisfying.',
     handle: 'chili-choco-spice-dark-roast',
     collection_id: collections.find(({ title }) => title === 'Dark Roasts')?.id,
-    category_ids: categories
-      .filter(({ name }) => name === 'Blends')
-      .map(({ id }) => id),
+    category_ids: categories.filter(({ name }) => name === 'Blends').map(({ id }) => id),
     status: ProductStatus.PUBLISHED,
-    tag_ids: tags.filter(t => ['Guatemala'].includes(t.value)).map(t => t.id),
-    thumbnail:
-      'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Chili-Choco.jpg',
+    tag_ids: tags.filter((t) => ['Guatemala'].includes(t.value)).map((t) => t.id),
+    thumbnail: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Chili-Choco.jpg',
     images: [
       {
         url: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Chili-Choco.jpg',
@@ -261,13 +231,10 @@ export const seedProducts = ({
       'Transport yourself to distant lands with our Cardamom Spiced Roast, a dark blend infused with the exotic and aromatic essence of cardamom. This luxurious coffee offers a rich and captivating taste experience, enveloping you in a world of flavor that is both intriguing and comforting.',
     handle: 'cardamom-spiced-roast-dark-blend',
     collection_id: collections.find(({ title }) => title === 'Dark Roasts')?.id,
-    category_ids: categories
-      .filter(({ name }) => name === 'Blends')
-      .map(({ id }) => id),
+    category_ids: categories.filter(({ name }) => name === 'Blends').map(({ id }) => id),
     status: ProductStatus.PUBLISHED,
-    tag_ids: tags.filter(t => ['Yemen'].includes(t.value)).map(t => t.id),
-    thumbnail:
-      'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Cardamom-Spice.jpg',
+    tag_ids: tags.filter((t) => ['Yemen'].includes(t.value)).map((t) => t.id),
+    thumbnail: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Cardamom-Spice.jpg',
     images: [
       {
         url: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Cardamom-Spice.jpg',
@@ -289,13 +256,10 @@ export const seedProducts = ({
       'Discover the majestic flavors of our Twilight Peak, a dark roast sourced from the pristine highlands of Peru. This coffee is a celebration of bold, smooth flavors with a refined finish, offering a rich and satisfying experience that is perfect for those who appreciate a well-crafted cup.',
     handle: 'twilight-peak-dark-roast',
     collection_id: collections.find(({ title }) => title === 'Dark Roasts')?.id,
-    category_ids: categories
-      .filter(({ name }) => name === 'Blends')
-      .map(({ id }) => id),
+    category_ids: categories.filter(({ name }) => name === 'Blends').map(({ id }) => id),
     status: ProductStatus.PUBLISHED,
-    tag_ids: tags.filter(t => ['Peru'].includes(t.value)).map(t => t.id),
-    thumbnail:
-      'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Twilight-Peak.jpg',
+    tag_ids: tags.filter((t) => ['Peru'].includes(t.value)).map((t) => t.id),
+    thumbnail: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Twilight-Peak.jpg',
     images: [
       {
         url: 'https://lambdacurrysites.s3.us-east-1.amazonaws.com/barrio/Twilight-Peak.jpg',
