@@ -11,7 +11,8 @@ export const Hero: FC<{
   image?: ImageField;
   className?: string;
   backgroundClassName?: string;
-}> = ({ title, content, actions, image, className, backgroundClassName }) => {
+  actionsClassName?: string;
+}> = ({ title, content, actions, image, className, backgroundClassName, actionsClassName }) => {
   return (
     <Container className={clsx('flex flex-col justify-center items-center relative w-full', className)}>
       <div
@@ -29,7 +30,9 @@ export const Hero: FC<{
           {typeof content === 'string' ? <div className="text-lg w-full">{content}</div> : content}
         </div>
 
-        {!!actions?.length && <ActionList actions={actions} className="mt-8 lg:mt-10 flex-col" />}
+        {!!actions?.length && (
+          <ActionList actions={actions} className={clsx('mt-8 lg:mt-10 flex-col', actionsClassName)} />
+        )}
       </div>
     </Container>
   );

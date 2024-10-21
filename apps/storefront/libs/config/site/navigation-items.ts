@@ -12,7 +12,7 @@ export const headerNavigationItems: NavigationCollection = [
   {
     id: 3,
     label: 'Our Story',
-    url: '/story',
+    url: '/about-us',
     sort_order: 1,
     location: NavigationItemLocation.header,
     new_tab: false,
