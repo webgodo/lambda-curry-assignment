@@ -20,7 +20,7 @@
       "cache": false,
       "persistent": true
     },
-    "medusa:setup": {
+    "medusa:init": {
       "cache": false
     }
   }
