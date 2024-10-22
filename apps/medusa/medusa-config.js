@@ -3,6 +3,7 @@ const { loadEnv, defineConfig, Modules } = require('@medusajs/framework/utils');
 loadEnv(process.env.NODE_ENV, process.cwd());
 
 const REDIS_URL = process.env.REDIS_URL;
+const STRIPE_API_KEY = process.env.STRIPE_API_KEY;
 
 module.exports = defineConfig({
   projectConfig: {
@@ -20,8 +21,8 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || 'supersecret',
     },
   },
-  modules: {
-    [Modules.PAYMENT]: {
+  modules: [
+    {
       resolve: '@medusajs/medusa/payment',
       options: {
         providers: [
@@ -29,33 +30,39 @@ module.exports = defineConfig({
             resolve: '@medusajs/medusa/payment-stripe',
             id: 'stripe',
             options: {
-              apiKey: process.env.STRIPE_API_KEY,
+              apiKey: STRIPE_API_KEY,
             },
           },
         ],
       },
     },
-    [Modules.EVENT_BUS]: {
+    {
+      resolve: '@medusajs/medusa/cache-redis',
+      options: {
+        redisUrl: REDIS_URL,
+      },
+    },
+    {
       resolve: '@medusajs/medusa/event-bus-redis',
       options: {
         redisUrl: REDIS_URL,
       },
     },
-    [Modules.WORKFLOW_ENGINE]: {
-      resolve: '@medusajs/workflow-engine-redis',
+    {
+      resolve: '@medusajs/medusa/workflow-engine-redis',
       options: {
         redis: {
           url: REDIS_URL,
         },
       },
     },
-  },
+  ],
   admin: {
     backendUrl: process.env.ADMIN_BACKEND_URL || 'http://localhost:9000',
-    vite: () => ({
-      css: {
-        postcss: [], // TODO: required to avoid issue, check if it can be removed after v2 is released
-      },
-    }),
+    // vite: () => ({
+    //   css: {
+    //     postcss: [], // TODO: required to avoid issue, check if it can be removed after v2 is released
+    //   },
+    // }),
   },
 });
