@@ -20,6 +20,7 @@ https://github.com/user-attachments/assets/3c10d2f5-91b8-405c-a47c-c8ae8a4be575
 - [Getting Started](#getting-started)
 - [Local Development Setup](#local-development-setup)
 - [Resetting the Database](#resetting-the-database)
+- [Enabling Express Checkout](#enabling-express-checkout)
 - [Useful Links](#useful-links)
 - [Contributors](#contributors)
 
@@ -105,11 +106,33 @@ You can view a live demo of the project [here](https://barrio.lambdacurry.dev/).
 ## Resetting the Database
 In order to reset the database, follow the steps from 3 to 7 in the Local Development Setup section.
 
+## Enabling Express Checkout
+
+> For a more complete guide on how to enable Express Checkout, see the Stripe [documentation](https://docs.stripe.com/elements/express-checkout-element).
+
+To enable Express Checkout in the Medusa Storefront, follow these steps:
+
+1. Enable the payment methods you want to use to during Express Checkout in the Stripe [payment methods settings](https://dashboard.stripe.com/settings/payment_methods).
+   - Learn more about Apple Pay integration [here](https://docs.stripe.com/apple-pay) 
+   - Learn more about Google Pay integration [here](https://docs.stripe.com/google-pay).
+
+2. Create your own [domain association file](https://docs.stripe.com/apple-pay?platform=web#verify-domain) to verify your domain, and replace the content in the `apps/storefront/app/routes/[.well-known].apple-developer-merchantid-domain-association.tsx` file with your own domain association file content.
+
+3. Register your domain for payment methods - see [this stripe guide](https://docs.stripe.com/payments/payment-methods/pmd-registration) for more information.
+   -  for development, you may want to use a service like [ngrok](https://ngrok.com).
+   -  for production, a domain with `https` is required.
+
+
+
+
+
+
 ## Useful Links
 
 - [Medusa Documentation](https://docs.medusajs.com/)
 - [Remix Documentation](https://remix.run/docs/en/main)
 - [Turborepo Documentation](https://turbo.build/repo/docs)
+ - [Stripe Express Checkout](https://docs.stripe.com/elements/express-checkout-element)
 
 
 ## Contributors
