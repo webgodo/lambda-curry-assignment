@@ -166,12 +166,12 @@ export default function IndexRoute() {
         }}
       />
 
-      <Container className="flex flex-col-reverse gap-8 items-center md:items-end p-6 lg:pt-24 lg:px-24 relative lg:min-h-[354px] min-h-[276px]">
+      <Container className="flex flex-col-reverse gap-8 items-center md:items-start p-6 lg:pt-24 xl:pt-16 lg:px-24 relative lg:min-h-[354px] min-h-[276px]">
         <div className="flex justify-center md:justify-end md:absolute md:-top-[30%] w-60 md:w-80 md:right-0 lg:right-20 lg:w-[420px]">
           <Image src="/assets/images/header-image-2.png" alt="Barrio background" height={520} width={420} />
         </div>
 
-        <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-italiana md:mr-[288px] lg:mr-[392px]">
+        <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-italiana md:ml-0 md:mr-[288px] lg:mr-[392px]">
           <span className="whitespace-nowrap">The Art of Roasting</span>
           <br />
           <span className="font-ballet text-[200%] whitespace-nowrap inline-block mt-6 mb-4 sm:mt-2 sm:-mb-4">
