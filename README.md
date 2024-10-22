@@ -1,26 +1,51 @@
-# Medusa 2 Starter with Remix Storefront
+<h1 align="center">
+  <a href="https://barrio.lambdacurry.dev"><img src="https://barrio.lambdacurry.dev/favicon.svg" alt="Medusa 2 Starter with Remix Storefront" width="80" height="80"></a>
+  <br>
+  <br>
+  Medusa 2 Starter with Remix Storefront
+  <br>
+</h1>
 
-This is a starter project for an e-commerce application using Medusa as the backend and Remix as the storefront, all set up in a Turborepo monorepo structure.
+
+This is an official Turborepo monorepo integrating a Medusa2 backend with a Remix frontend. Showcasing a Coffee Roast themed dynamic storefront, it features Stripe payment integration, scalability with unlimited products and categories, and a developer-friendly setup using TypeScript and Biome. Ideal for rapidly building dynamic, scalable e-commerce stores.
 
 https://github.com/user-attachments/assets/3c10d2f5-91b8-405c-a47c-c8ae8a4be575
 
+## Table
 
-## Project Overview
-
-This monorepo includes:
-
-- `medusa`: A Medusa backend application
-- `storefront`: A Remix-based storefront application
-- Shared packages and configurations
+- [Prerequisites](#prerequisites)
+- [Project Overview](#project-overview)
+  - [Key Features](#key-features)
+  - [Demo](#demo)
+- [Getting Started](#getting-started)
+- [Local Development Setup](#local-development-setup)
+- [Resetting the Database](#resetting-the-database)
+- [Useful Links](#useful-links)
+- [Contributors](#contributors)
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
-- Node.js 20+
-- Yarn 4.5.0
-- Remix
-- Docker and Docker Compose
+- ✅ Node.js 20+
+- ✅ Yarn 4.5.0
+- ✅ Remix
+- ✅ Docker and Docker Compose
+
+
+## Project Overview
+
+### Key Features
+
+- **Dynamic Storefront**: Leverages Medusa2's robust headless commerce capabilities and Remix's fast, data-driven UI for modern e-commerce experiences.
+- **Advanced Payment Integration**: Out-of-the-box support for Stripe enables secure and reliable transaction processing.
+- **Scalability**: Supports unlimited products, collections, categories, and tags, accommodating businesses as they expand their inventory.
+- **Developer Experience**: Built with TypeScript and Biome, enhancing code quality, consistency, and maintainability.
+
+## Demo
+
+You can view a live demo of the project [here](https://barrio.lambdacurry.dev/).
+
 
 ## Getting Started
 
@@ -35,94 +60,62 @@ Before you begin, ensure you have the following installed:
    ```
 
 ## Local Development Setup
+1. Generate `.env` files for both the Medusa backend and the Remix storefront.
+   ```
+   yarn run generate-env
+   ```
+   > This will generate the `apps/medusa/.env` and `apps/storefront/.env` files.
 
-1. Navigate to the `apps/medusa` folder:
+2. Replace the following environment variables in your `apps/medusa/.env` file:
+   - `STRIPE_API_KEY` # Your Stripe secret key. Required to checkout.
+
+3. Run the following command to initialize the Medusa database:
 
    ```
-   cd apps/medusa
-   ```
-
-2. Start the Docker containers:
-
-   ```
-   docker compose up -d
-   ```
-
-3. Create a `.env` file:
-
-   - Copy the `.env.template` file to `.env`
-   - Replace the `DATABASE_URL` and `POSTGRES_URL` environment variables in the `.env` file
-
-4. Set up Medusa:
-
-   ```
-   yarn run medusa:setup
+   yarn run medusa:init
    ```
 
    > This will set up the database and seed it with some initial data, including a user with the email `admin@medusa-test.com` and password `supersecret`.
 
-5. Return to the root of the monorepo:
-
-   ```
-   cd ../..
-   ```
-
-6. Start the development servers:
+4. Start the development servers:
    ```
    yarn dev
    ```
 
-This will start both the Medusa backend and the Remix storefront in development mode.
+   > This will start both the Medusa backend and the Remix storefront in development mode.
 
-7. Create a Publishable API Key for your storefront:
+5. Create a Publishable API Key for your storefront:
 
-   - Log in to the Medusa admin:
+   - Log in to the [Medusa admin](http://localhost:9000/app/login) using the credentials `admin@medusa-test.com` / `supersecret`
 
-     `http://localhost:9000/app/login`
+   - Navigate to the [_Publishable API Keys_ settings](http://localhost:9000/app/settings/publishable-api-keys) and **copy** an exisiting API Key or create a new one with at least one Sales Channel.
 
-   - Log in with the email `admin@medusa-test.com` and password `supersecret`
-   - Navigate to _Settings_ `>` _Publishable API Keys_:
+6. Replace the environment variables in the `apps/storefront/.env` file:
 
-     `http://localhost:9000/app/settings/publishable-api-keys`
+   - `MEDUSA_PUBLISHABLE_KEY` # API key from previous step
+   - `STRIPE_PUBLIC_KEY` # starts with `pk_`
+   - `STRIPE_SECRET_KEY` # starts with `sk_`
 
-   - Create a new API key and add, at least, a Sales Channel, it can be the _Default Sales Channel_.
-
-8. Set the Publishable API Key in `apps/storefront/.env` file:
-
-   - Replace the `MEDUSA_PUBLISHABLE_KEY` environment variable in the `.env` file with the API key created in the previous step.
-
-9. Set the Stripe API Key values in `apps/storefront/.env` file:
-
-   - Replace the `STRIPE_PUBLIC_KEY`, `STRIPE_SECRET_KEY` environment variable in the `.env` file with your Stripe public and private key values.
-
-10. Restart the Remix server:
-
-- From the root of the monorepo:
-
-  ```
-  yarn dev
-  ```
+7. Restart your storefront and medusa backend:
+      ```
+      yarn dev
+      ```
 
 
 ## Resetting the Database
-1. Navigate to the `apps/medusa` folder:
-
-   ```
-   cd apps/medusa
-   ```
-2. Run the following command to reset the database:
-
-   ```
-   yarn medusa:reset
-   ```
-
-   > This will reset the database and seed it the initial data`
-
-
-3. Follow the steps from 7 to 10 in the Local Development Setup section.
+In order to reset the database, follow the steps from 3 to 7 in the Local Development Setup section.
 
 ## Useful Links
 
 - [Medusa Documentation](https://docs.medusajs.com/)
 - [Remix Documentation](https://remix.run/docs/en/main)
 - [Turborepo Documentation](https://turbo.build/repo/docs)
+
+
+## Contributors
+Made with ❤️ by the Lambda Curry team.
+
+
+<a href = "https://github.com/lambda-curry/medusa2-starter/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=lambda-curry/medusa2-starter"/>
+</a>
