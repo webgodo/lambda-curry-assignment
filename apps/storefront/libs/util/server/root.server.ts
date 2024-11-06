@@ -27,6 +27,7 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
   ]);
 
   const headers = new Headers();
+
   const currentRegionCookieId = await getSelectedRegionId(headers);
 
   if (currentRegionCookieId !== region?.id) {
@@ -73,4 +74,4 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
 
 export type RootLoader = typeof getRootLoader;
 
-export type RootLoaderResonse = RemixLoaderResponse<typeof getRootLoader>['data'];
+export type RootLoaderResponse = RemixLoaderResponse<typeof getRootLoader>['data'];

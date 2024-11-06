@@ -25,6 +25,7 @@ export default defineConfig({
     remix({
       future: {
         v3_singleFetch: true,
+        unstable_optimizeDeps: true,
       },
     }),
     tsconfigPaths({ root: './' }),

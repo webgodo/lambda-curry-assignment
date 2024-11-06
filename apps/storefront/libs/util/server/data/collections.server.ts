@@ -1,12 +1,29 @@
 import { medusaError } from '@libs/util/medusaError';
-import { sdk } from '@libs/util/server/client.server';
+import { sdk, sdkCache } from '@libs/util/server/client.server';
 import { HttpTypes } from '@medusajs/types';
+import { MILLIS } from '../cache-builder.server';
+import cachified from '@epic-web/cachified';
 
 export const retrieveCollection = async function (id: string) {
   return sdk.store.collection.retrieve(id, {}).then(({ collection }) => collection);
 };
 
 export const getCollectionsList = async function (
+  offset: number = 0,
+  limit: number = 100,
+): Promise<{ collections: HttpTypes.StoreCollection[]; count: number }> {
+  return cachified({
+    key: `collections-${JSON.stringify({ offset, limit })}`,
+    cache: sdkCache,
+    staleWhileRevalidate: MILLIS.ONE_HOUR,
+    ttl: MILLIS.TEN_SECONDS,
+    async getFreshValue() {
+      return _getCollectionsList(offset, limit);
+    },
+  });
+};
+
+export const _getCollectionsList = async function (
   offset: number = 0,
   limit: number = 100,
 ): Promise<{ collections: HttpTypes.StoreCollection[]; count: number }> {

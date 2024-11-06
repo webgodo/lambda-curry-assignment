@@ -19,7 +19,7 @@ export const LogoStoreName: FC<{ primary?: boolean; className?: string }> = ({ p
     <Link
       viewTransition
       to="/"
-      prefetch="intent"
+      prefetch="viewport"
       className={clsx('logo-header flex flex-nowrap items-center justify-center gap-x-2 gap-y-2 sm:gap-x-4', className)}
     >
       <LogoHeader primary={primary} className="xs:text-2xl whitespace-nowrap text-lg font-bold font-aboreto">
