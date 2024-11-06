@@ -61,7 +61,7 @@ const PaginationItem: FC<PaginationItemProps> = ({ className, currentPage, page,
       )}
       aria-current={isCurrent ? 'page' : 'false'}
       to={props.href}
-      prefetch="intent"
+      prefetch="viewport"
     >
       {page}
     </Link>
@@ -104,7 +104,7 @@ const PaginationButton: FC<PaginationArrowButtonProps> = ({
       }}
       className={className}
       to={href}
-      prefetch="intent"
+      prefetch="viewport"
     >
       {children}
     </Link>

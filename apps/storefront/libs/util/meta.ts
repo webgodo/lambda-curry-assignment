@@ -1,7 +1,7 @@
 import type { MetaDescriptor, MetaFunction } from '@remix-run/node';
 import { UIMatch } from '@remix-run/react';
 import { MetaMatch } from '@remix-run/react/dist/routeModules';
-import type { RootLoaderResonse } from './server/root.server';
+import type { RootLoaderResponse } from './server/root.server';
 
 const filterEmptyMeta = (meta: MetaDescriptor[]) =>
   meta.filter(
@@ -58,7 +58,7 @@ export const getParentMeta: MetaFunction = ({ matches }) =>
  * Gets the common meta most routes will use.
  */
 export const getCommonMeta: MetaFunction = ({ matches }) => {
-  const rootMatch = matches[0] as UIMatch<RootLoaderResonse>;
+  const rootMatch = matches[0] as UIMatch<RootLoaderResponse>;
   const currentMatch: MetaMatch = matches?.[matches?.length - 1];
 
   const siteDetails = rootMatch.data?.siteDetails;

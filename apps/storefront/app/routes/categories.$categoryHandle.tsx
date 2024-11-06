@@ -58,6 +58,7 @@ export default function ProductCategoryRoute() {
                 <NavLink
                   to={`/categories/${category.handle}`}
                   key={category.id}
+                  prefetch="viewport"
                   className={({ isActive }) =>
                     clsx('h-full p-4', {
                       'font-bold border-b-2 border-primary': isActive,

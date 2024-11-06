@@ -1,24 +1,51 @@
-import { sdk } from '@libs/util/server/client.server';
+import cachified from '@epic-web/cachified';
 import { medusaError } from '@libs/util/medusaError';
-import { HttpTypes, StoreRegionCountry } from '@medusajs/types';
+import { sdk, sdkCache } from '@libs/util/server/client.server';
+import { StoreRegionCountry } from '@medusajs/types';
 import { getSelectedRegionId } from '../cookies.server';
+
+const ONE_HOUR_IN_MS = 3_600_000;
 
 export const getCountryCode = (country: StoreRegionCountry) => {
   return country?.iso_2 as string;
 };
 
 export const listRegions = async function () {
+  return cachified({
+    key: 'list-regions',
+    cache: sdkCache,
+    staleWhileRevalidate: ONE_HOUR_IN_MS,
+    ttl: 10_000,
+    async getFreshValue() {
+      return _listRegions();
+    },
+  });
+};
+
+export const _listRegions = async function () {
   return sdk.store.region
     .list({})
     .then(({ regions }) => regions)
     .catch(medusaError);
 };
 
-export const retrieveRegion = async function (id: string) {
+export const _retrieveRegion = async function (id: string) {
   return sdk.store.region
     .retrieve(id, {})
     .then(({ region }) => region)
     .catch(medusaError);
+};
+
+export const retrieveRegion = async function (id: string) {
+  return cachified({
+    key: `region-${id}`,
+    cache: sdkCache,
+    staleWhileRevalidate: 150_000,
+    ttl: 10_000,
+    async getFreshValue() {
+      return _retrieveRegion(id);
+    },
+  });
 };
 
 export const getDefaultRegion = async function () {

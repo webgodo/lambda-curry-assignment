@@ -78,7 +78,7 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
                                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                                     )
                                   }
-                                  prefetch="intent"
+                                  prefetch="viewport"
                                 >
                                   <span className="flex-1">{navItemProps.label}</span>
                                 </URLAwareNavLink>

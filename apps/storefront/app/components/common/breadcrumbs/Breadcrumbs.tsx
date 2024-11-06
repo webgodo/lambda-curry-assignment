@@ -23,7 +23,7 @@ export const Breadcrumbs: FC<BreadcrumbsProps> = ({ breadcrumbs, className }) =>
               <ButtonLink
                 size="sm"
                 as={(buttonProps) => (
-                  <Link viewTransition prefetch="intent" {...buttonProps} to={breadcrumb.url || ''} />
+                  <Link viewTransition prefetch="viewport" {...buttonProps} to={breadcrumb.url || ''} />
                 )}
                 className="!text-gray-500 no-underline hover:!text-gray-700 hover:underline"
               >

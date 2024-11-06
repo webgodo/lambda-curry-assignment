@@ -29,9 +29,5 @@ export default function ProductDetailRoute() {
     product: StoreProduct;
   }>();
 
-  if (!product) {
-    return <div>404</div>;
-  }
-
   return <ProductTemplate product={product} />;
 }

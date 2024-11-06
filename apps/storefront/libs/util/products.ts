@@ -2,7 +2,7 @@ import { formatPrice, getCheapestProductVariant, getVariantFinalPrice, getVarian
 import type { MetaFunction } from '@remix-run/node';
 import { UIMatch } from '@remix-run/react';
 import { getCommonMeta, getParentMeta, mergeMeta } from './meta';
-import { RootLoaderResonse } from './server/root.server';
+import { RootLoaderResponse } from './server/root.server';
 import { StoreProduct, StoreProductOption, StoreProductOptionValue, StoreProductVariant } from '@medusajs/types';
 
 export const getVariantBySelectedOptions = (
@@ -160,7 +160,7 @@ export const getOptionValuesWithDiscountLabels = (
 };
 
 export const getProductMeta: MetaFunction = ({ data, matches }) => {
-  const rootMatch = matches[0] as UIMatch<RootLoaderResonse>;
+  const rootMatch = matches[0] as UIMatch<RootLoaderResponse>;
   const region = rootMatch.data?.region;
   const product = (data as any).product as StoreProduct;
   const defaultVariant = getCheapestProductVariant(product);

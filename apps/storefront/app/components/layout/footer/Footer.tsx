@@ -68,7 +68,7 @@ export const Footer = () => {
                 {...navItemProps}
                 newTab={new_tab}
                 className="hover:text-slate-200 block pb-2 text-sm"
-                prefetch="intent"
+                prefetch="viewport"
               >
                 {navItemProps.label}
               </URLAwareNavLink>

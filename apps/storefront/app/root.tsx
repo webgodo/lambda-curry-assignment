@@ -1,4 +1,13 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useRouteError } from '@remix-run/react';
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  ShouldRevalidateFunction,
+  useLoaderData,
+  useRouteError,
+} from '@remix-run/react';
 import { useRef } from 'react';
 import { Page } from './components/layout/Page';
 import { RootProviders } from './providers/root-providers';
@@ -30,6 +39,23 @@ export const getRootMeta: MetaFunction = ({ data }) => {
 export const meta: MetaFunction<typeof loader> = mergeMeta(getCommonMeta, getRootMeta);
 
 export const loader = getRootLoader;
+
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+  actionResult,
+  currentParams,
+  currentUrl,
+  defaultShouldRevalidate,
+  formAction,
+  formData,
+  formEncType,
+  formMethod,
+  nextParams,
+  nextUrl,
+}) => {
+  if (!formMethod || formMethod === 'GET') return false;
+
+  return defaultShouldRevalidate;
+};
 
 function App() {
   const headRef = useRef<HTMLHeadElement>(null);
