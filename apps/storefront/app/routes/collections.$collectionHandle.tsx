@@ -1,27 +1,22 @@
+import { Container } from '@app/components/common/container';
+import { ProductListWithPagination } from '@app/components/product/ProductListWithPagination';
+import { PageHeading } from '@app/components/sections/PageHeading';
+import { fetchCollections } from '@libs/util/server/data/collections.server';
+import { fetchProducts } from '@libs/util/server/products.server';
 import { LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { NavLink, useLoaderData } from '@remix-run/react';
-import { ProductListWithPagination } from '@app/components/product/ProductListWithPagination';
-import { sdk } from '@libs/util/server/client.server';
-import { Container } from '@app/components/common/container';
-import { getSelectedRegion } from '@libs/util/server/data/regions.server';
-import { getCollectionsList } from '@libs/util/server/data/collections.server';
-import { PageHeading } from '@app/components/sections/PageHeading';
 import clsx from 'clsx';
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const region = await getSelectedRegion(request.headers);
   const handle = params.collectionHandle as string;
 
-  const { collections } = await getCollectionsList();
+  const { collections } = await fetchCollections();
 
   const collection = collections?.find((collection) => collection.handle === handle);
 
-  if (!collection) {
-    throw redirect('/products');
-  }
+  if (!collection) throw redirect('/products');
 
-  const { products, count, limit, offset } = await sdk.store.product.list({
-    region_id: region?.id,
+  const { products, count, limit, offset } = await fetchProducts(request, {
     collection_id: collection.id,
   });
 

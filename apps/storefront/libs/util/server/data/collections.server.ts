@@ -8,7 +8,7 @@ export const retrieveCollection = async function (id: string) {
   return sdk.store.collection.retrieve(id, {}).then(({ collection }) => collection);
 };
 
-export const getCollectionsList = async function (
+export const fetchCollections = async function (
   offset: number = 0,
   limit: number = 100,
 ): Promise<{ collections: HttpTypes.StoreCollection[]; count: number }> {
@@ -18,12 +18,12 @@ export const getCollectionsList = async function (
     staleWhileRevalidate: MILLIS.ONE_HOUR,
     ttl: MILLIS.TEN_SECONDS,
     async getFreshValue() {
-      return _getCollectionsList(offset, limit);
+      return _fetchCollections(offset, limit);
     },
   });
 };
 
-export const _getCollectionsList = async function (
+export const _fetchCollections = async function (
   offset: number = 0,
   limit: number = 100,
 ): Promise<{ collections: HttpTypes.StoreCollection[]; count: number }> {

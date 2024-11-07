@@ -1,15 +1,13 @@
 import { LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { NavLink, useLoaderData } from '@remix-run/react';
 import { ProductListWithPagination } from '@app/components/product/ProductListWithPagination';
-import { sdk } from '@libs/util/server/client.server';
 import { Container } from '@app/components/common/container';
-import { getSelectedRegion } from '@libs/util/server/data/regions.server';
 import { listCategories } from '@libs/util/server/data/categories.server';
 import { PageHeading } from '@app/components/sections/PageHeading';
 import clsx from 'clsx';
+import { fetchProducts } from '@libs/util/server/products.server';
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const region = await getSelectedRegion(request.headers);
   const handle = params.categoryHandle as string;
 
   const categories = await listCategories();
@@ -20,8 +18,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     throw redirect('/products');
   }
 
-  const { products, count, limit, offset } = await sdk.store.product.list({
-    region_id: region?.id,
+  const { products, count, limit, offset } = await fetchProducts(request, {
     category_id: category.id,
   });
 

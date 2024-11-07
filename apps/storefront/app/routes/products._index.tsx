@@ -1,17 +1,13 @@
+import { Breadcrumbs } from '@app/components/common/breadcrumbs';
+import { Container } from '@app/components/common/container';
+import { ProductListWithPagination } from '@app/components/product/ProductListWithPagination';
 import HomeIcon from '@heroicons/react/24/solid/HomeIcon';
+import { fetchProducts } from '@libs/util/server/products.server';
 import { LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { ProductListWithPagination } from '@app/components/product/ProductListWithPagination';
-import { sdk } from '@libs/util/server/client.server';
-import { Container } from '@app/components/common/container';
-import { Breadcrumbs } from '@app/components/common/breadcrumbs';
-import { getSelectedRegion } from '@libs/util/server/data/regions.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const region = await getSelectedRegion(request.headers);
-  const { products, count, limit, offset } = await sdk.store.product.list({
-    region_id: region?.id,
-  });
+  const { products, count, limit, offset } = await fetchProducts(request, {});
 
   return { products, count, limit, offset };
 };
