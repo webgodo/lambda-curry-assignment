@@ -4,10 +4,7 @@ import { getSelectedRegion } from './data/regions.server';
 import cachified from '@epic-web/cachified';
 import { MILLIS } from './cache-builder.server';
 
-export const fetchProducts = async (
-  request: Request,
-  { currency_code, ...query }: HttpTypes.StoreProductParams = {},
-) => {
+export const fetchProducts = async (request: Request, { ...query }: HttpTypes.StoreProductListParams = {}) => {
   const region = await getSelectedRegion(request.headers);
 
   return await cachified({

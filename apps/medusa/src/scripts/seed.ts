@@ -1,8 +1,8 @@
 import {
   createApiKeysWorkflow,
   createProductCategoriesWorkflow,
-  createProductsWorkflow,
   createProductTagsWorkflow,
+  createProductsWorkflow,
   createRegionsWorkflow,
   createSalesChannelsWorkflow,
   createShippingOptionsWorkflow,
@@ -13,9 +13,9 @@ import {
   linkSalesChannelsToStockLocationWorkflow,
   updateStoresWorkflow,
 } from '@medusajs/core-flows';
+import type { IPaymentModuleService } from '@medusajs/framework/types';
 import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils';
-import type { Logger } from '@medusajs/types';
-import type { RemoteLink } from '@medusajs/modules-sdk';
+import { createCollectionsWorkflow } from '@medusajs/medusa/core-flows';
 import type {
   ExecArgs,
   IFulfillmentModuleService,
@@ -23,12 +23,10 @@ import type {
   IStoreModuleService,
 } from '@medusajs/types';
 import { seedProducts } from './seed/products';
-import type { IPaymentModuleService } from '@medusajs/framework/types';
-import { createCollectionsWorkflow } from '@medusajs/medusa/core-flows';
 
 export default async function seedDemoData({ container }: ExecArgs) {
-  const logger: Logger = container.resolve(ContainerRegistrationKeys.LOGGER);
-  const remoteLink = container.resolve<RemoteLink>(ContainerRegistrationKeys.REMOTE_LINK);
+  const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
+  const remoteLink = container.resolve(ContainerRegistrationKeys.LINK);
   const fulfillmentModuleService: IFulfillmentModuleService = container.resolve(Modules.FULFILLMENT);
   const salesChannelModuleService: ISalesChannelModuleService = container.resolve(Modules.SALES_CHANNEL);
   const storeModuleService: IStoreModuleService = container.resolve(Modules.STORE);

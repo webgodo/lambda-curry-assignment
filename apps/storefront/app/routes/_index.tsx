@@ -8,7 +8,6 @@ import { SideBySide } from '@app/components/sections/SideBySide';
 import { GridCTA } from '@app/components/sections/GridCTA';
 import { ActionList } from '@app/components/common/actions-list/ActionList';
 import ProductList from '@app/components/sections/ProductList';
-import { mergeMeta } from '@libs/util/meta';
 
 export const loader = async (args: LoaderFunctionArgs) => {
   return {};
