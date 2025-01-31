@@ -12,9 +12,6 @@
     "headless",
     "medusa"
   ],
-  "installConfig": {
-    "hoistingLimits": "workspaces"
-  },
   "scripts": {
     "nukedb": "docker compose down -v && docker compose up -d",
     "build": "medusa build",
