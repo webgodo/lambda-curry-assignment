@@ -28,3 +28,6 @@ build
 .medusa
 
 demo-values.yaml
+
+/.yalc
+yalc.lock
