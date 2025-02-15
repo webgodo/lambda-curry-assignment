@@ -72,7 +72,8 @@
     "typescript": "^5.6.2",
     "vite": "5.4.14",
     "vite-imagetools": "^7.0.5",
-    "vite-tsconfig-paths": "^4.2.1"
+    "vite-tsconfig-paths": "^4.2.1",
+    "yalc": "^1.0.0-pre.53"
   },
   "dependencies": {
     "@epic-web/cachified": "^5.2.0",
