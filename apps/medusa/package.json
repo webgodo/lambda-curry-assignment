@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@lambdacurry/medusa-product-reviews": "file:.yalc/@lambdacurry/medusa-product-reviews",
+    "@lambdacurry/medusa-plugins-sdk": "file:.yalc/@lambdacurry/medusa-plugins-sdk",
     "@medusajs/admin-sdk": "2.5.0",
     "@medusajs/cli": "2.5.0",
     "@medusajs/framework": "2.5.0",
