@@ -3453,10 +3453,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lambdacurry/medusa-plugins-sdk@file:../medusa-plugins-sdk::locator=%40lambdacurry%2Fmedusa-product-reviews%40file%3A.yalc%2F%40lambdacurry%2Fmedusa-product-reviews%23.yalc%2F%40lambdacurry%2Fmedusa-product-reviews%3A%3Ahash%3Deefda5%26locator%3Dmedusa%2540workspace%253Aapps%252Fmedusa":
+  version: 0.0.1
+  resolution: "@lambdacurry/medusa-plugins-sdk@file:../medusa-plugins-sdk#../medusa-plugins-sdk::hash=ea5967&locator=%40lambdacurry%2Fmedusa-product-reviews%40file%3A.yalc%2F%40lambdacurry%2Fmedusa-product-reviews%23.yalc%2F%40lambdacurry%2Fmedusa-product-reviews%3A%3Ahash%3Deefda5%26locator%3Dmedusa%2540workspace%253Aapps%252Fmedusa"
+  peerDependencies:
+    "@medusajs/js-sdk": 2.5.0
+  checksum: 10c0/495f80c2b600deb6a3c7f978cd2e0edc1bbebcbd4afe5fdef0b42d4a35e3effe4f131094572fcafbf32cd9267bc4b7e86bd6d930f90924840fa14d040ee3760d
+  languageName: node
+  linkType: hard
+
+"@lambdacurry/medusa-plugins-sdk@file:.yalc/@lambdacurry/medusa-plugins-sdk::locator=storefront%40workspace%3Aapps%2Fstorefront":
+  version: 0.0.1
+  resolution: "@lambdacurry/medusa-plugins-sdk@file:.yalc/@lambdacurry/medusa-plugins-sdk#.yalc/@lambdacurry/medusa-plugins-sdk::hash=ea5967&locator=storefront%40workspace%3Aapps%2Fstorefront"
+  peerDependencies:
+    "@medusajs/js-sdk": 2.5.0
+  checksum: 10c0/495f80c2b600deb6a3c7f978cd2e0edc1bbebcbd4afe5fdef0b42d4a35e3effe4f131094572fcafbf32cd9267bc4b7e86bd6d930f90924840fa14d040ee3760d
+  languageName: node
+  linkType: hard
+
 "@lambdacurry/medusa-product-reviews@file:.yalc/@lambdacurry/medusa-product-reviews::locator=medusa%40workspace%3Aapps%2Fmedusa":
   version: 0.0.3
-  resolution: "@lambdacurry/medusa-product-reviews@file:.yalc/@lambdacurry/medusa-product-reviews#.yalc/@lambdacurry/medusa-product-reviews::hash=a1ab51&locator=medusa%40workspace%3Aapps%2Fmedusa"
+  resolution: "@lambdacurry/medusa-product-reviews@file:.yalc/@lambdacurry/medusa-product-reviews#.yalc/@lambdacurry/medusa-product-reviews::hash=eefda5&locator=medusa%40workspace%3Aapps%2Fmedusa"
   dependencies:
+    "@lambdacurry/medusa-plugins-sdk": "file:../medusa-plugins-sdk"
     "@medusajs/js-sdk": "npm:^2.5.0"
     "@medusajs/workflows-sdk": "npm:^2.5.0"
     luxon: "npm:^3.5.0"
@@ -3475,7 +3494,7 @@ __metadata:
     "@mikro-orm/postgresql": 6.4.3
     awilix: ^8.0.1
     pg: ^8.13.0
-  checksum: 10c0/e2b4af54e76bb6f30419d6e77fcd6f5037d74f2d260e8b41700aba1fe5de4c37202f34ffa9c3b867aaf3e5bb783136f3f97eade351d5976dc5bf7763ff4ae5c2
+  checksum: 10c0/bb41c3a94fca1f09f7050c69cb3e5c75624b3bfa63999c4db6f4787c701403ef9721413a65627f228c7437d08406c3790177d59b67f72159391df6957720eb1b
   languageName: node
   linkType: hard
 
@@ -26426,6 +26445,7 @@ __metadata:
     "@googlemaps/addressvalidation": "npm:^1.0.2"
     "@headlessui/react": "npm:^2.1.9"
     "@heroicons/react": "npm:^2.0.18"
+    "@lambdacurry/medusa-plugins-sdk": "file:.yalc/@lambdacurry/medusa-plugins-sdk"
     "@loadable/component": "npm:^5.15.3"
     "@medusajs/js-sdk": "npm:2.4.0"
     "@medusajs/types": "npm:2.4.0"
@@ -26515,6 +26535,7 @@ __metadata:
     vite: "npm:5.4.14"
     vite-imagetools: "npm:^7.0.5"
     vite-tsconfig-paths: "npm:^4.2.1"
+    yalc: "npm:^1.0.0-pre.53"
     yet-another-react-lightbox: "npm:^3.14.0"
     yup: "npm:^1.4.0"
     zustand: "npm:^4.4.7"
