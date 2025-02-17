@@ -3453,6 +3453,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lambdacurry/medusa-plugins-sdk@file:.yalc/@lambdacurry/medusa-plugins-sdk::locator=medusa%40workspace%3Aapps%2Fmedusa":
+  version: 0.0.1
+  resolution: "@lambdacurry/medusa-plugins-sdk@file:.yalc/@lambdacurry/medusa-plugins-sdk#.yalc/@lambdacurry/medusa-plugins-sdk::hash=5d9b07&locator=medusa%40workspace%3Aapps%2Fmedusa"
+  dependencies:
+    "@medusajs/js-sdk": "npm:^2.5.0"
+  checksum: 10c0/c4e31b72c11feeb049f30717ccf445c6fff07765ae2361f11448f617ae59c33523fa5bcd7ecf80c73cda722953e7ef0c6bb8284e32b319037ca8d10ccc60aaf8
+  languageName: node
+  linkType: hard
+
 "@lambdacurry/medusa-plugins-sdk@npm:0.0.1":
   version: 0.0.1
   resolution: "@lambdacurry/medusa-plugins-sdk@npm:0.0.1"
@@ -21705,6 +21714,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "medusa@workspace:apps/medusa"
   dependencies:
+    "@lambdacurry/medusa-plugins-sdk": "file:.yalc/@lambdacurry/medusa-plugins-sdk"
     "@lambdacurry/medusa-product-reviews": "file:.yalc/@lambdacurry/medusa-product-reviews"
     "@medusajs/admin-sdk": "npm:2.5.0"
     "@medusajs/cli": "npm:2.5.0"
