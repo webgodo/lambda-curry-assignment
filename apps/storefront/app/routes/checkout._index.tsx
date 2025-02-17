@@ -32,7 +32,7 @@ const fetchShippingOptions = async (cartId: string) => {
 const findCheapestShippingOption = (shippingOptions: StoreCartShippingOption[]) => {
   return shippingOptions.reduce((cheapest, current) => {
     return cheapest.amount <= current.amount ? cheapest : current;
-  });
+  }, shippingOptions[0]);
 };
 
 const ensureSelectedCartShippingMethod = async (request: Request, cart: StoreCart) => {
