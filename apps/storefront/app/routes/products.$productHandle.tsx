@@ -51,8 +51,12 @@ export const meta: MetaFunction<ProductPageLoaderData> = getMergedProductMeta;
 
 export default function ProductDetailRoute() {
   const { product, productReviews, productReviewStats } = useLoaderData<ProductPageLoaderData>();
-  console.log('🚀 ~ ProductDetailRoute ~ productReviews:', productReviews);
-  console.log('🚀 ~ ProductDetailRoute ~ productReviewStats:', productReviewStats);
 
-  return <ProductTemplate product={product} />;
+  return (
+    <ProductTemplate
+      product={product}
+      productReviews={productReviews.product_reviews}
+      productReviewStats={productReviewStats.product_review_stats[0]}
+    />
+  );
 }
