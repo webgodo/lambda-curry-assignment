@@ -3452,20 +3452,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lambdacurry/medusa-plugins-sdk@npm:0.0.2, @lambdacurry/medusa-plugins-sdk@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "@lambdacurry/medusa-plugins-sdk@npm:0.0.2"
+"@lambdacurry/medusa-plugins-sdk@npm:latest":
+  version: 0.0.3
+  resolution: "@lambdacurry/medusa-plugins-sdk@npm:0.0.3"
   dependencies:
     "@medusajs/js-sdk": "npm:^2.5.0"
-  checksum: 10c0/10eee267e77937dc097fdb6d7f7ea9ae33130c32358de932a2346e9cea72ed0019919d7095ceea01bb25c252f01dab61dfb196321e2ef346a278a972bdf757df
+    "@types/express": "npm:^5.0.0"
+    "@types/multer": "npm:^1.4.12"
+    form-data: "npm:^4.0.2"
+  checksum: 10c0/6233911b46033b83c37846643840cad10eb7c8414ff4cbd2314f2aad9bca189456c4bf9eaa695bd8caf5e508f9455f83ad6f99fc8d4c22ec91c53494db71eeb5
   languageName: node
   linkType: hard
 
-"@lambdacurry/medusa-product-reviews@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "@lambdacurry/medusa-product-reviews@npm:0.0.2"
+"@lambdacurry/medusa-product-reviews@npm:latest":
+  version: 0.0.3
+  resolution: "@lambdacurry/medusa-product-reviews@npm:0.0.3"
   dependencies:
-    "@lambdacurry/medusa-plugins-sdk": "npm:0.0.2"
+    "@lambdacurry/medusa-plugins-sdk": "npm:latest"
     "@medusajs/js-sdk": "npm:^2.5.0"
     "@medusajs/workflows-sdk": "npm:^2.5.0"
     luxon: "npm:^3.5.0"
@@ -3484,7 +3487,7 @@ __metadata:
     "@mikro-orm/postgresql": 6.4.3
     awilix: ^8.0.1
     pg: ^8.13.0
-  checksum: 10c0/ba69c75b48338f68dc205611c5d264dea6fb1de36b9f3f2b06441677150d3fd0772797662bc84a5af2781a62bd214a35d40cf44595df58490d6855647137808c
+  checksum: 10c0/b49d8f570c69b901ae299407746dcff8bba933fb208128b3b6defdd8f12c9bc5c8e466203aad3bbc80736a3fcd57ae64d81b5f553312e84ff3852f1e5d45f1c8
   languageName: node
   linkType: hard
 
@@ -12336,7 +12339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:*":
+"@types/express@npm:*, @types/express@npm:^5.0.0":
   version: 5.0.0
   resolution: "@types/express@npm:5.0.0"
   dependencies:
@@ -12609,7 +12612,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/multer@npm:^1.4.11":
+"@types/multer@npm:^1.4.11, @types/multer@npm:^1.4.12":
   version: 1.4.12
   resolution: "@types/multer@npm:1.4.12"
   dependencies:
@@ -17811,7 +17814,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^4.0.0":
+"form-data@npm:^4.0.0, form-data@npm:^4.0.2":
   version: 4.0.2
   resolution: "form-data@npm:4.0.2"
   dependencies:
@@ -21709,7 +21712,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "medusa@workspace:apps/medusa"
   dependencies:
-    "@lambdacurry/medusa-product-reviews": "npm:^0.0.2"
+    "@lambdacurry/medusa-product-reviews": "npm:latest"
     "@medusajs/admin-sdk": "npm:2.5.0"
     "@medusajs/cli": "npm:2.5.0"
     "@medusajs/framework": "npm:2.5.0"
@@ -26439,7 +26442,7 @@ __metadata:
     "@googlemaps/addressvalidation": "npm:^1.0.2"
     "@headlessui/react": "npm:^2.1.9"
     "@heroicons/react": "npm:^2.0.18"
-    "@lambdacurry/medusa-plugins-sdk": "npm:^0.0.2"
+    "@lambdacurry/medusa-plugins-sdk": "npm:latest"
     "@loadable/component": "npm:^5.15.3"
     "@medusajs/js-sdk": "npm:2.4.0"
     "@medusajs/types": "npm:2.4.0"
