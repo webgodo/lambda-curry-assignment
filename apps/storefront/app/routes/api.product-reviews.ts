@@ -5,6 +5,7 @@ import { upsertProductReviewsValidator } from '@app/components/reviews/product-f
 import { StoreUpsertProductReviewsDTO } from '@lambdacurry/medusa-plugins-sdk';
 import { upsertProductReviews } from '@libs/util/server/data/product-reviews.server';
 import { createReadStream } from 'fs';
+import { baseMedusaConfig } from '@libs/util/server/client.server';
 
 export enum ProductReviewAction {
   UPSERT_PRODUCT_REVIEWS = 'upsertProductReviews',
@@ -26,13 +27,13 @@ const uploadImages = async (_images: NodeOnDiskFile | NodeOnDiskFile[] | null | 
     formData.append('files', blob, image.name);
   }
 
-  const url = new URL('/store/product-reviews/uploads', process.env.PUBLIC_MEDUSA_API_URL);
+  const url = new URL('/store/product-reviews/uploads', baseMedusaConfig.baseUrl);
 
   const response = await fetch(url, {
     method: 'POST',
     body: formData,
     headers: {
-      'x-publishable-api-key': process.env.MEDUSA_PUBLISHABLE_KEY as string,
+      'x-publishable-api-key': baseMedusaConfig.publishableKey ?? '',
     },
   });
 

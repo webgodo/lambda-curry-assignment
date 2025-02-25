@@ -30,7 +30,7 @@
     "add-user": "medusa user --email admin@medusa-test.com --password supersecret && medusa user --email admin@lambdacurry.dev --password password"
   },
   "dependencies": {
-    "@lambdacurry/medusa-product-reviews": "latest",
+    "@lambdacurry/medusa-product-reviews": "0.0.4",
     "@medusajs/admin-sdk": "2.5.0",
     "@medusajs/cli": "2.5.0",
     "@medusajs/framework": "2.5.0",

@@ -80,7 +80,7 @@
     "@googlemaps/addressvalidation": "^1.0.2",
     "@headlessui/react": "^2.1.9",
     "@heroicons/react": "^2.0.18",
-    "@lambdacurry/medusa-plugins-sdk": "latest",
+    "@lambdacurry/medusa-plugins-sdk": "0.0.4",
     "@loadable/component": "^5.15.3",
     "@medusajs/js-sdk": "2.4.0",
     "@medusajs/types": "2.4.0",

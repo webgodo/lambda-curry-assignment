@@ -3452,6 +3452,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lambdacurry/medusa-plugins-sdk@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@lambdacurry/medusa-plugins-sdk@npm:0.0.4"
+  dependencies:
+    "@medusajs/js-sdk": "npm:^2.5.0"
+    "@types/express": "npm:^5.0.0"
+    "@types/multer": "npm:^1.4.12"
+    form-data: "npm:^4.0.2"
+  checksum: 10c0/8b2d0ae3cefcac38c78aeeef9ea6fac4017a56da39200a7de81b7c054c79971e683a6b0ed462926e7a57daa8270ebbb840580f348a6ee4b4bcf7cfd6283f6c91
+  languageName: node
+  linkType: hard
+
 "@lambdacurry/medusa-plugins-sdk@npm:latest":
   version: 0.0.3
   resolution: "@lambdacurry/medusa-plugins-sdk@npm:0.0.3"
@@ -3464,9 +3476,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lambdacurry/medusa-product-reviews@npm:latest":
-  version: 0.0.3
-  resolution: "@lambdacurry/medusa-product-reviews@npm:0.0.3"
+"@lambdacurry/medusa-product-reviews@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@lambdacurry/medusa-product-reviews@npm:0.0.4"
   dependencies:
     "@lambdacurry/medusa-plugins-sdk": "npm:latest"
     "@medusajs/js-sdk": "npm:^2.5.0"
@@ -3487,7 +3499,7 @@ __metadata:
     "@mikro-orm/postgresql": 6.4.3
     awilix: ^8.0.1
     pg: ^8.13.0
-  checksum: 10c0/b49d8f570c69b901ae299407746dcff8bba933fb208128b3b6defdd8f12c9bc5c8e466203aad3bbc80736a3fcd57ae64d81b5f553312e84ff3852f1e5d45f1c8
+  checksum: 10c0/fa2165ab5900f06a9aecc78a1dc5b1f68d578e18702b8236740f496d2c326315ba50aa34d096435e1bab32c5cb356363a9db822839dde36cd3ebfdd1289664c9
   languageName: node
   linkType: hard
 
@@ -21712,7 +21724,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "medusa@workspace:apps/medusa"
   dependencies:
-    "@lambdacurry/medusa-product-reviews": "npm:latest"
+    "@lambdacurry/medusa-product-reviews": "npm:0.0.4"
     "@medusajs/admin-sdk": "npm:2.5.0"
     "@medusajs/cli": "npm:2.5.0"
     "@medusajs/framework": "npm:2.5.0"
@@ -26442,7 +26454,7 @@ __metadata:
     "@googlemaps/addressvalidation": "npm:^1.0.2"
     "@headlessui/react": "npm:^2.1.9"
     "@heroicons/react": "npm:^2.0.18"
-    "@lambdacurry/medusa-plugins-sdk": "npm:latest"
+    "@lambdacurry/medusa-plugins-sdk": "npm:0.0.4"
     "@loadable/component": "npm:^5.15.3"
     "@medusajs/js-sdk": "npm:2.4.0"
     "@medusajs/types": "npm:2.4.0"
