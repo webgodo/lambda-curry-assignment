@@ -1,22 +1,13 @@
-import { sdkCache } from '@libs/util/server/client.server';
+import { sdk, sdkCache } from '@libs/util/server/client.server';
 import cachified from '@epic-web/cachified';
 import { MILLIS } from '../cache-builder.server';
 import { withAuthHeaders } from '../auth.server';
 
 import {
-  MedusaPluginsSDK,
   StoreListProductReviewsQuery,
   StoreListProductReviewStatsQuery,
   StoreUpsertProductReviewsDTO,
 } from '@lambdacurry/medusa-plugins-sdk';
-
-const sdk = new MedusaPluginsSDK({
-  baseUrl: 'http://localhost:9000',
-  publishableKey: 'pk_3fc12123016bcb734099cc0219334ca49b8df94564b4f65be359398be1325e33',
-  auth: {
-    type: 'session',
-  },
-});
 
 export const fetchProductReviews = async (query: Partial<StoreListProductReviewsQuery> = {}) => {
   return await cachified({
