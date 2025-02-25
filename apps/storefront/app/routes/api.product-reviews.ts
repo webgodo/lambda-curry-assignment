@@ -1,80 +1,90 @@
+import { type ActionHandler, handleAction } from '@libs/util/handleAction.server';
 import { FormValidationError } from '@libs/util/validation/validation-error';
-import { handleAction, type ActionHandler } from '@libs/util/handleAction.server';
 import type { ActionFunctionArgs, NodeOnDiskFile } from '@remix-run/node';
-
-import { upsertProductReviews } from '@libs/util/server/data/product-reviews.server';
-import { StoreUpsertProductReviewsDTO } from '@lambdacurry/medusa-plugins-sdk';
 import { upsertProductReviewsValidator } from '@app/components/reviews/product-form-validators';
-import { sdk } from '@libs/util/server/client.server';
-// import { File, Blob, Buffer } from 'buffer';
-import { createReadStream, ReadStream } from 'fs';
+import { StoreUpsertProductReviewsDTO } from '@lambdacurry/medusa-plugins-sdk';
+import { upsertProductReviews } from '@libs/util/server/data/product-reviews.server';
+import { createReadStream } from 'fs';
 
 export enum ProductReviewAction {
   UPSERT_PRODUCT_REVIEWS = 'upsertProductReviews',
 }
-// const nodeOnDiskFileToFile = async (nodeFile: NodeOnDiskFile): Promise<File> => {
-//   const storedFile = await readFile(nodeFile.getFilePath());
-//   console.log('🚀 ~ nodeOnDiskFileToFile ~ storedFile:', storedFile);
 
-//   return new File([storedFile], nodeFile.name, {
-//     type: nodeFile.type,
-//     lastModified: nodeFile.lastModified,
-//   });
-// };
+const uploadImages = async (_images: NodeOnDiskFile | NodeOnDiskFile[] | null | undefined): Promise<string[]> => {
+  if (!_images) return [];
+  if (_images && !Array.isArray(_images)) _images = [_images];
+  if (!Array.isArray(_images)) return [];
+  if (!_images?.length) return [];
+  const images = _images.filter((image) => image.size > 0);
+  if (!images.length) return [];
 
-const uploadImages = async (images: NodeOnDiskFile | NodeOnDiskFile[] | null | undefined): Promise<string[]> => {
-  console.log('🚀 ~ uploadImages ~ images:', images);
-  if (!images) return [];
-  if (images && !Array.isArray(images)) images = [images];
-  if (!Array.isArray(images)) return [];
-  if (!images?.length) return [];
-  // console.log('🚀 ~ uploadImages ~ images:', images[0].);
-  // const files = images
-  //   .filter((image) => image.getFilePath)
-  //   .map((image) => {
-  //     return {
-  //       filePath: image.getFilePath(),
-  //       name: image.name,
-  //     };
-  //   });
-  const filesPaths = await Promise.all(images.map(async (image) => image.getFilePath()));
-  console.log('🚀 ~ uploadImages ~ filesPaths:', filesPaths);
-  const readStreams: ReadStream[] = filesPaths.map((filePath) => createReadStream(filePath));
+  const formData = new FormData();
 
-  const response = await sdk.store.productReviews.uploadImages(readStreams);
-  console.log('🚀 ~ uploadImages ~ response:', response);
-  if (!response?.uploads) return [];
-  return Array.isArray(response.uploads) ? response.uploads.map((i) => i.url) : [response.uploads.url];
+  for (const image of images) {
+    const fileBuffer = await readFileAsBuffer(image.getFilePath());
+    const blob = new Blob([fileBuffer], { type: image.type || 'application/octet-stream' });
+    formData.append('files', blob, image.name);
+  }
+
+  const url = new URL('/store/product-reviews/uploads', process.env.PUBLIC_MEDUSA_API_URL);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'x-publishable-api-key': process.env.MEDUSA_PUBLISHABLE_KEY as string,
+    },
+  });
+
+  if (!response.ok) {
+    console.error('Upload failed with status:', response.status);
+    const errorText = await response.text();
+    console.error('Error details:', errorText);
+    return [];
+  }
+
+  const data = (await response.json()) as { files: { id: string; url: string }[] };
+
+  return data.files.map((i) => i.url);
 };
 
 const upsertProductReviewsHandler: ActionHandler<unknown> = async (
-  data: Omit<StoreUpsertProductReviewsDTO['reviews'][number], 'images'> & { images: NodeOnDiskFile[] },
+  data: Omit<StoreUpsertProductReviewsDTO['reviews'][number], 'images'> & {
+    images: NodeOnDiskFile[];
+    existing_images?: string;
+  },
   actionArgs,
 ) => {
   const { request } = actionArgs;
-  const { order_id, order_line_item_id, rating, content, images } = data;
 
-  const result = await upsertProductReviewsValidator.validate({
+  const { order_id, order_line_item_id, rating, content, images, existing_images } = data;
+
+  const payload = {
     order_id,
     order_line_item_id,
-    rating,
+    rating: Number(rating),
     content,
-  });
+    existing_images,
+  };
+
+  const result = await upsertProductReviewsValidator.validate(payload);
+
   if (result.error) throw new FormValidationError(result.error);
 
   try {
-    if ('__rvfInternalFormId' in data) delete data.__rvfInternalFormId;
+    const { existing_images, ...upsertPayload } = result.data;
 
-    const imageUrls = await uploadImages(images ?? []);
+    const newImageUrls = await uploadImages(images ?? []);
+
+    const existingImageUrls = existing_images?.split(',').map((url) => url.trim()) || [];
+
+    const allImageUrls = [...newImageUrls, ...existingImageUrls];
 
     const { product_reviews } = await upsertProductReviews(request, {
       reviews: [
         {
-          order_id,
-          order_line_item_id,
-          rating,
-          content,
-          images: imageUrls,
+          ...upsertPayload,
+          images: allImageUrls.map((url) => ({ url })),
         },
       ],
     });
@@ -100,4 +110,15 @@ const actions = {
 
 export async function action(actionArgs: ActionFunctionArgs) {
   return await handleAction({ actionArgs, actions });
+}
+
+async function readFileAsBuffer(filePath: string): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    const stream = createReadStream(filePath);
+
+    stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.on('error', (err) => reject(err));
+    stream.on('end', () => resolve(Buffer.concat(chunks)));
+  });
 }

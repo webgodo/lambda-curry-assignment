@@ -5,7 +5,6 @@ import { sdk } from '@libs/util/server/client.server';
 import { fetchProductReviews } from '@libs/util/server/data/product-reviews.server';
 import { LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
-import { StoreProductReview } from '@lambdacurry/medusa-plugins-sdk';
 import { ButtonLink } from '@app/components/common/buttons';
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -13,7 +12,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   if (!order) throw redirect('/');
 
-  const { product_reviews } = await fetchProductReviews({ order_id: order.id });
+  const { product_reviews } = await fetchProductReviews({ order_id: order.id }, { forceFresh: true });
 
   return { order, product_reviews };
 };
@@ -59,11 +58,7 @@ export default function OrderReviewsRoute() {
 
                 return (
                   <li key={item.id}>
-                    <ProductReviewComponent
-                      orderId={order.id}
-                      lineItem={item}
-                      productReview={review as StoreProductReview}
-                    />
+                    <ProductReviewComponent orderId={order.id} lineItem={item} productReview={review} />
                   </li>
                 );
               })}

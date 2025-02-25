@@ -9,12 +9,16 @@ import {
   StoreUpsertProductReviewsDTO,
 } from '@lambdacurry/medusa-plugins-sdk';
 
-export const fetchProductReviews = async (query: Partial<StoreListProductReviewsQuery> = {}) => {
+export const fetchProductReviews = async (
+  query: Partial<StoreListProductReviewsQuery> = {},
+  cacheOptions: { forceFresh?: boolean } = {},
+) => {
   return await cachified({
     key: `product-reviews-${JSON.stringify(query)}`,
     cache: sdkCache,
     staleWhileRevalidate: MILLIS.ONE_HOUR,
     ttl: MILLIS.TEN_SECONDS,
+    forceFresh: cacheOptions.forceFresh,
     async getFreshValue() {
       return await sdk.store.productReviews.list({
         ...query,

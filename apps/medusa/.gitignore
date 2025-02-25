@@ -31,3 +31,5 @@ demo-values.yaml
 
 /.yalc
 yalc.lock
+
+static/*

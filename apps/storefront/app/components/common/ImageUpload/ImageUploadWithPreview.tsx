@@ -5,18 +5,14 @@ import { ImageUploader } from './ImageUploader';
 import clsx from 'clsx';
 import { FieldError } from '../forms/fields/FieldError';
 
-export interface MedusaImage {
-  created_at: string;
-  deleted_at: string;
-  id: string;
-  metadata: string;
-  updated_at: string;
+export interface ProductReviewImage {
+  id?: string;
   url: string;
 }
 
 interface ImageUploadWithPreviewProps {
   className?: string;
-  existingImages?: MedusaImage[];
+  existingImages?: ProductReviewImage[];
   name?: string;
   limit?: number;
   replace?: boolean;
@@ -30,7 +26,7 @@ export const ImageUploadWithPreview: React.FC<ImageUploadWithPreviewProps> = ({
   replace,
 }) => {
   const imageUploaderComponentRef = useRef<HTMLDivElement>(null);
-  const [files, setFiles] = useState<(File | MedusaImage)[]>([...(existingImages || [])]);
+  const [files, setFiles] = useState<(File | ProductReviewImage)[]>([...(existingImages || [])]);
   const [error, setError] = useState<string>('');
   const handleFileInputChange = (newFiles: File[]) => {
     if (newFiles.length + files.length > limit && !replace) return setError(`Maximum number of images is ${limit}`);
@@ -80,8 +76,13 @@ export const ImageUploadWithPreview: React.FC<ImageUploadWithPreviewProps> = ({
       {keepExistingImages && keepExistingImages.length > 0 && (
         <input
           type="hidden"
-          name="images_keep"
-          value={keepExistingImages && keepExistingImages.map((image) => image.id)}
+          name="existing_images"
+          value={
+            keepExistingImages
+              ?.filter((image) => image.url)
+              ?.map((image) => image.url)
+              ?.filter(Boolean) as string[]
+          }
         />
       )}
 
