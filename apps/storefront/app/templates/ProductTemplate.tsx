@@ -109,7 +109,7 @@ const ProductReviews = ({
 export interface ProductTemplateProps {
   product: StoreProduct;
   reviewsCount: number;
-  reviewStats: StoreProductReviewStats;
+  reviewStats?: StoreProductReviewStats;
 }
 
 const variantIsSoldOut: (variant: StoreProductVariant | undefined) => boolean = (variant) => {

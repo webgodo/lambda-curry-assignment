@@ -18,9 +18,7 @@ type ReviewWithOrder = StoreProductReview & {
 };
 
 const getCustomerName = (review: ReviewWithOrder) => {
-  if (review.order?.customer?.first_name && review.order?.customer?.last_name) {
-    return `${review.order.customer.first_name} ${review.order.customer.last_name}`;
-  }
+  if (review.name) return review.name;
 
   if (review.order?.billing_address?.first_name && review.order?.billing_address?.last_name) {
     return `${review.order.billing_address.first_name} ${review.order.billing_address.last_name}`;

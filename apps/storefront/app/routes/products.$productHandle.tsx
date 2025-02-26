@@ -12,45 +12,33 @@ import { withPaginationParams } from '@libs/util/withPaginationParams';
 export const loader = async (args: LoaderFunctionArgs) => {
   const { limit: reviewsLimit, offset: reviewsOffset } = withPaginationParams({
     request: args.request,
-    defaultPageSize: 10,
+    defaultPageSize: 5,
   });
 
   const { products } = await fetchProducts(args.request, {
     handle: args.params.productHandle,
     fields: '*categories',
-  }).catch((e) => {
-    return { products: [] };
   });
 
-  if (!products.length) {
-    return redirect('/404');
-  }
+  if (!products.length) throw redirect('/404');
 
   const product = products[0];
 
-  const productReviews = await fetchProductReviews({
-    product_id: product.id,
-    // can use status: (pending, approved, flagged)[] to get reviews by status // default is approved
-    offset: reviewsOffset,
-    limit: reviewsLimit,
-  }).catch((e) => {
-    console.error('\n\n\nError fetching product reviews', e);
-    return {
-      product_reviews: [],
-      count: 0,
+  const [productReviews, productReviewStats] = await Promise.all([
+    fetchProductReviews({
+      product_id: product.id,
+      fields: 'id,rating,content,name,images.url,created_at,updated_at',
+      order: 'created_at',
+      // can use status: (pending, approved, flagged)[] to get reviews by status // default is approved
       offset: reviewsOffset,
       limit: reviewsLimit,
-    } as StoreListProductReviewsResponse;
-  });
-
-  const productReviewStats = await fetchProductReviewStats({
-    product_id: product.id,
-    offset: 0,
-    limit: 10,
-  }).catch((e) => {
-    console.error('\n\n\nError fetching product review stats', e);
-    return { product_review_stats: [], count: 0, offset: 0, limit: 0 } as StoreListProductReviewStatsResponse;
-  });
+    }),
+    fetchProductReviewStats({
+      product_id: product.id,
+      offset: 0,
+      limit: 1,
+    }),
+  ]);
 
   return { product, productReviews, productReviewStats };
 };
