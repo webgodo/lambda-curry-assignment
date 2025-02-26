@@ -240,3 +240,48 @@ export const reviewContents = [
     ],
   },
 ];
+
+export function generateReviewResponse(review: {
+  rating: number;
+  name: string | null;
+}) {
+  const rating = review.rating;
+
+  const firstName = review.name?.split(' ')[0] ?? 'Customer';
+
+  // Positive reviews (4-5 stars)
+  if (rating >= 4) {
+    const positiveResponses = [
+      `Thank you for your wonderful feedback, ${firstName}! We're thrilled that you enjoyed our coffee. Your support means a lot to us!`,
+      `We appreciate your kind words, ${firstName}! It's great to hear that our coffee met your expectations. Come back for more soon!`,
+      `Thanks for the glowing review! We put a lot of care into our roasting process, and it's rewarding to know you can taste the difference.`,
+      `We're so happy you enjoyed the coffee, ${firstName}! Your feedback helps other coffee lovers discover our products.`,
+      `Thank you for taking the time to share your experience! We're delighted that you're enjoying our coffee.`,
+    ];
+    return positiveResponses[Math.floor(Math.random() * positiveResponses.length)];
+  }
+
+  // Neutral reviews (3 stars)
+  else if (rating === 3) {
+    const neutralResponses = [
+      `Thank you for your honest feedback, ${firstName}. We appreciate your thoughts and will consider how we might improve our coffee.`,
+      `We value your input, ${firstName}. If you have any specific suggestions on how we could make your experience better, please reach out to our customer service team.`,
+      `Thanks for sharing your experience. We're constantly working to improve our products, and your feedback is helpful in that process.`,
+      `We appreciate your candid review. If you'd like to try something that might better suit your taste preferences, our team would be happy to make recommendations.`,
+      `Thank you for your feedback. We'd love to hear more about what would make our coffee perfect for you!`,
+    ];
+    return neutralResponses[Math.floor(Math.random() * neutralResponses.length)];
+  }
+
+  // Negative reviews (1-2 stars)
+  else {
+    const negativeResponses = [
+      `We're sorry to hear about your experience, ${firstName}. We'd like to make this right - please contact our customer service team so we can address your concerns.`,
+      `Thank you for bringing this to our attention. We hold our coffee to high standards, and we apologize that this batch didn't meet expectations. Please reach out to us directly so we can make it right.`,
+      `We apologize that our coffee didn't meet your expectations. Your feedback is important, and we'd like to offer you a replacement. Please contact our support team.`,
+      `We're disappointed to hear that you didn't enjoy our coffee. Quality is very important to us, and we'd appreciate the opportunity to make this right for you.`,
+      `Thank you for your honest feedback. We're sorry this wasn't the experience you hoped for. Please give us a chance to make it up to you - our customer service team will be in touch.`,
+    ];
+    return negativeResponses[Math.floor(Math.random() * negativeResponses.length)];
+  }
+}
