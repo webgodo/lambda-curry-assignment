@@ -25,6 +25,7 @@
     "directory": "packages/markethaus-storefront"
   },
   "devDependencies": {
+    "@medusajs/types": "2.5.0",
     "@remix-run/dev": "2.15.0",
     "@remix-run/eslint-config": "2.15.0",
     "@swc-node/register": "^1.4.2",
@@ -80,10 +81,9 @@
     "@googlemaps/addressvalidation": "^1.0.2",
     "@headlessui/react": "^2.1.9",
     "@heroicons/react": "^2.0.18",
-    "@lambdacurry/medusa-plugins-sdk": "0.0.4",
+    "@lambdacurry/medusa-plugins-sdk": "0.0.5",
     "@loadable/component": "^5.15.3",
-    "@medusajs/js-sdk": "2.4.0",
-    "@medusajs/types": "2.4.0",
+    "@medusajs/js-sdk": "2.5.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@remix-run/node": "2.13.1",
     "@remix-run/react": "2.13.1",

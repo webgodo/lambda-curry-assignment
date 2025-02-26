@@ -1,12 +1,12 @@
-import { FC } from 'react';
-import { useFetcher } from '@remix-run/react';
-import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon';
-import { PromotionDTO, StoreCart } from '@medusajs/types';
 import { CheckoutAction } from '@app/routes/api.checkout';
+import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon';
+import { PromotionDTO, StoreCart, StoreCartPromotion } from '@medusajs/types';
+import { useFetcher } from '@remix-run/react';
+import { FC } from 'react';
 
 export interface RemoveDiscountCodeButtonProps {
   cart: StoreCart;
-  promotion: PromotionDTO;
+  promotion: StoreCartPromotion;
 }
 
 export const RemovePromotionCodeButton: FC<RemoveDiscountCodeButtonProps> = ({ cart, promotion }) => {

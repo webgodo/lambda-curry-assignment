@@ -27,10 +27,11 @@
     "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
     "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
     "medusa:init": "yarn run nukedb && medusa db:create --db medusa2 && yarn run migrate && yarn run sync && yarn run seed && yarn run add-user",
-    "add-user": "medusa user --email admin@medusa-test.com --password supersecret && medusa user --email admin@lambdacurry.dev --password password"
+    "add-user": "medusa user --email admin@medusa-test.com --password supersecret && medusa user --email admin@lambdacurry.dev --password password",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@lambdacurry/medusa-product-reviews": "0.0.4",
+    "@lambdacurry/medusa-product-reviews": "0.0.5",
     "@medusajs/admin-sdk": "2.5.0",
     "@medusajs/cli": "2.5.0",
     "@medusajs/framework": "2.5.0",

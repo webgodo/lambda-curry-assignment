@@ -104,7 +104,7 @@ export const loader = async ({
     throw redirect('/');
   }
 
-  if ((cart as CartDTO).completed_at) {
+  if ((cart as { completed_at?: string }).completed_at) {
     const headers = new Headers();
     await removeCartId(headers);
 
