@@ -45,7 +45,7 @@ export interface DeleteLineItemRequestPayload {
 
 export interface LineItemRequestResponse extends StoreCartResponse {}
 
-const createItem: ActionHandler<StoreCartResponse> = async (payload: CreateLineItemPayLoad, { request }) => {
+const createItem: ActionHandler<{ cart: StoreCart }> = async (payload: CreateLineItemPayLoad, { request }) => {
   const result = await addCartItemValidation.validate(payload);
 
   if (result.error) throw new FormValidationError(result.error);
