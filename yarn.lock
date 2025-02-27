@@ -3464,14 +3464,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lambdacurry/medusa-product-reviews@npm:0.0.5":
-  version: 0.0.5
-  resolution: "@lambdacurry/medusa-product-reviews@npm:0.0.5"
+"@lambdacurry/medusa-product-reviews@npm:0.0.6":
+  version: 0.0.6
+  resolution: "@lambdacurry/medusa-product-reviews@npm:0.0.6"
   dependencies:
+    "@hookform/resolvers": "npm:3.4.2"
     "@lambdacurry/medusa-plugins-sdk": "npm:0.0.5"
     "@medusajs/js-sdk": "npm:^2.5.0"
     "@medusajs/workflows-sdk": "npm:^2.5.0"
     luxon: "npm:^3.5.0"
+    zod: "npm:3.22.4"
   peerDependencies:
     "@medusajs/admin-sdk": 2.5.0
     "@medusajs/cli": 2.5.0
@@ -3487,7 +3489,7 @@ __metadata:
     "@mikro-orm/postgresql": 6.4.3
     awilix: ^8.0.1
     pg: ^8.13.0
-  checksum: 10c0/a732199820fb306ea70d756c7cb6beaa8579e2695f6bd8e5005ad986c74ffd0f250e77687b772240cdaed6546dac514397cb973b299386e3a6da37312dd49b01
+  checksum: 10c0/1dfa4c4454f67f002df88566fb2998db11d2421aeee7bb383b88630b14273d17c75309b3ac12f7b8ec46b45bf88f06609fd129fbd777fe533867cc331176c398
   languageName: node
   linkType: hard
 
@@ -21683,7 +21685,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "medusa@workspace:apps/medusa"
   dependencies:
-    "@lambdacurry/medusa-product-reviews": "npm:0.0.5"
+    "@lambdacurry/medusa-product-reviews": "npm:0.0.6"
     "@medusajs/admin-sdk": "npm:2.5.0"
     "@medusajs/cli": "npm:2.5.0"
     "@medusajs/framework": "npm:2.5.0"
