@@ -12,6 +12,13 @@ export interface ProductReviewListProps {
 
 export const ProductReviewList: FC<ProductReviewListProps> = ({ productReviews }) => {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const [currentGalleryImages, setCurrentGalleryImages] = useState<{ url: string; alt?: string; name?: string }[]>([]);
+
+  // Function to handle image click from any review
+  const handleImageClick = (reviewImages: { url: string; alt?: string; name?: string }[], imageIndex: number) => {
+    setCurrentGalleryImages(reviewImages);
+    setLightboxIndex(imageIndex);
+  };
 
   return (
     <div>
@@ -43,19 +50,15 @@ export const ProductReviewList: FC<ProductReviewListProps> = ({ productReviews }
                 />
 
                 {galleryImages.length > 0 && (
-                  <>
-                    <ReviewImageThumbnailRow galleryImages={galleryImages} onClick={setLightboxIndex} />
-                    <LightboxGallery
-                      images={galleryImages.map(({ url, ...image }) => ({ ...image, src: url }))}
-                      lightBoxIndex={lightboxIndex}
-                      setLightBoxIndex={setLightboxIndex}
-                    />
-                  </>
+                  <ReviewImageThumbnailRow
+                    galleryImages={galleryImages}
+                    onClick={(imageIndex) => handleImageClick(galleryImages, imageIndex)}
+                  />
                 )}
 
                 {/* Store Owner Response */}
                 {review.response && review.response.content && (
-                  <div className="mt-6 rounded-md bg-gray-50 p-4">
+                  <div className="mt-4 rounded-md bg-gray-50 p-4">
                     <div className="flex items-center">
                       <h4 className="text-sm font-medium text-gray-900">Barrio's Response</h4>
                       {review.response.created_at && (
@@ -78,6 +81,13 @@ export const ProductReviewList: FC<ProductReviewListProps> = ({ productReviews }
           })}
         </div>
       )}
+
+      {/* Single LightboxGallery for all reviews */}
+      <LightboxGallery
+        images={currentGalleryImages.map(({ url, ...image }) => ({ ...image, src: url }))}
+        lightBoxIndex={lightboxIndex}
+        setLightBoxIndex={setLightboxIndex}
+      />
     </div>
   );
 };
