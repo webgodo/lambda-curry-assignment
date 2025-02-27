@@ -78,7 +78,7 @@ module.exports = defineConfig({
     workflowEngineModule,
   ],
   admin: {
-    backendUrl: process.env.ADMIN_BACKEND_URL || 'http://localhost:9000',
+    backendUrl: process.env.ADMIN_BACKEND_URL,
     vite: () => {
       return {
         optimizeDeps: {
