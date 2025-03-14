@@ -236,8 +236,6 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
     }
   }, [isAddingToCart, hasErrors, product.id]);
 
-<<<<<<< Updated upstream
-=======
   useEffect(() => {
     // Initialize controlledOptions with defaultValues.options only on initial load
     if (Object.keys(controlledOptions).length === 0) {
@@ -245,7 +243,6 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
     }
   }, [defaultValues.options, controlledOptions]);
 
->>>>>>> Stashed changes
   const soldOut = variantIsSoldOut(selectedVariant) || productSoldOut;
 
   // Use useCallback for the form submission handler
