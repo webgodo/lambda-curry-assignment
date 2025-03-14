@@ -35,6 +35,7 @@ import { StoreProduct, StoreProductOptionValue, StoreProductVariant } from '@med
 import { Validator } from 'remix-validated-form';
 import { StoreProductReview, StoreProductReviewStats } from '@lambdacurry/medusa-plugins-sdk';
 import { ProductReviewStars } from '@app/components/reviews/ProductReviewStars';
+import { formatPrice, getCheapestProductVariant, getVariantFinalPrice } from '@libs/util/prices';
 
 export interface AddToCartFormValues {
   productId: string;
@@ -44,6 +45,11 @@ export interface AddToCartFormValues {
   };
 }
 
+/**
+ * Creates a validator for the add to cart form based on product options
+ * @param product - The product to create the validator for
+ * @returns A validator for the add to cart form
+ */
 export const getAddToCartValidator = (product: StoreProduct): Validator<AddToCartFormValues> => {
   const optionsValidation = product.options!.reduce(
     (acc, option) => {
@@ -65,6 +71,11 @@ export const getAddToCartValidator = (product: StoreProduct): Validator<AddToCar
   return withYup(Yup.object().shape(schemaShape)) as Validator<AddToCartFormValues>;
 };
 
+/**
+ * Generates breadcrumbs for a product page
+ * @param product - The product to generate breadcrumbs for
+ * @returns An array of breadcrumb objects
+ */
 const getBreadcrumbs = (product: StoreProduct) => {
   const breadcrumbs: Breadcrumb[] = [
     {
@@ -92,26 +103,17 @@ const getBreadcrumbs = (product: StoreProduct) => {
   return breadcrumbs;
 };
 
-const ProductReviews = ({
-  productReviews,
-  productReviewStats,
-}: { productReviews: StoreProductReview[]; productReviewStats: StoreProductReviewStats }) => {
-  if (!productReviews?.length) return null;
-
-  return (
-    <div>
-      {' '}
-      {productReviewStats.average_rating} Stars ({productReviews.length} Reviews)
-    </div>
-  );
-};
-
 export interface ProductTemplateProps {
   product: StoreProduct;
   reviewsCount: number;
   reviewStats?: StoreProductReviewStats;
 }
 
+/**
+ * Determines if a variant is sold out based on inventory
+ * @param variant - The variant to check
+ * @returns True if the variant is sold out, false otherwise
+ */
 const variantIsSoldOut: (variant: StoreProductVariant | undefined) => boolean = (variant) => {
   return !!(variant?.manage_inventory && variant?.inventory_quantity! < 1);
 };
@@ -131,18 +133,38 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
 
   const validator = getAddToCartValidator(product);
 
-  const defaultValues: AddToCartFormValues = {
+  const defaultValues = {
     productId: product.id!,
     quantity: 1,
-    options:
-      product.options?.reduce(
-        (acc, option) => {
-          if (!option.id || !option.values?.length) return acc;
-          acc[option.id] = option.values[0].value;
-          return acc;
-        },
-        {} as Record<string, string>,
-      ) || {},
+    options: useMemo(() => {
+      // Get the first variant as the default
+      const firstVariant = product.variants?.[0];
+
+      if (firstVariant && firstVariant.options) {
+        // Create options object from the first variant
+        return firstVariant.options.reduce(
+          (acc, option) => {
+            if (option.option_id && option.value) {
+              acc[option.option_id] = option.value;
+            }
+            return acc;
+          },
+          {} as Record<string, string>,
+        );
+      }
+
+      // Fallback to first option values if no variants
+      return (
+        product.options?.reduce(
+          (acc, option) => {
+            if (!option.id || !option.values?.length) return acc;
+            acc[option.id] = option.values[0].value;
+            return acc;
+          },
+          {} as Record<string, string>,
+        ) || {}
+      );
+    }, [product]),
   };
 
   const breadcrumbs = getBreadcrumbs(product);
@@ -154,61 +176,116 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
   );
 
   const variantMatrix = useMemo(() => selectVariantMatrix(product), [product]);
-  const selectedVariant = useMemo(
-    () => selectVariantFromMatrixBySelectedOptions(variantMatrix, selectedOptions),
-    [variantMatrix, selectedOptions],
-  );
+  const selectedVariant = useMemo(() => {
+    return selectVariantFromMatrixBySelectedOptions(variantMatrix, selectedOptions);
+  }, [variantMatrix, selectedOptions]);
 
   const productSelectOptions = useMemo(
     () =>
       product.options?.map((option, index) => {
+        // For the first option (Duration), always show all values
+        if (index === 0) {
+          const optionValuesWithPrices = getOptionValuesWithDiscountLabels(
+            index,
+            currencyCode,
+            option.values || [],
+            variantMatrix,
+            selectedOptions,
+          );
+
+          return {
+            title: option.title,
+            product_id: option.product_id as string,
+            id: option.id,
+            values: optionValuesWithPrices,
+          };
+        }
+
+        // For subsequent options, filter based on previous selections
         const filteredOptionValues = getFilteredOptionValues(product, controlledOptions, option.id);
-        const optionValues = option.values as unknown as (StoreProductOptionValue & {
-          disabled?: boolean;
-        })[];
 
-        optionValues.forEach((optionValue) => {
-          if (!filteredOptionValues.find((filteredOptionValue) => optionValue.value === filteredOptionValue.value)) {
-            (optionValue as any).disabled = true;
-          } else {
-            (optionValue as any).disabled = false;
-          }
-        });
+        // Only include option values that are available based on current selections
+        const availableOptionValues = option.values?.filter((optionValue) =>
+          filteredOptionValues.some((filteredValue) => filteredValue.value === optionValue.value),
+        ) as StoreProductOptionValue[];
 
-        const optionValuesWithLabels = getOptionValuesWithDiscountLabels(
+        const optionValuesWithPrices = getOptionValuesWithDiscountLabels(
           index,
           currencyCode,
-          optionValues,
+          availableOptionValues || [],
           variantMatrix,
           selectedOptions,
         );
+
         return {
           title: option.title,
           product_id: option.product_id as string,
           id: option.id,
-          values: optionValuesWithLabels.map(({ value, label }) => ({
-            value,
-            label,
-          })),
+          values: optionValuesWithPrices,
         };
       }),
-    [product, controlledOptions],
+    [product, controlledOptions, currencyCode, variantMatrix, selectedOptions],
   );
 
   const productSoldOut = useProductInventory(product).averageInventory === 0;
 
+  /**
+   * Updates controlled options based on a changed option and resets subsequent options
+   * @param currentOptions - Current controlled options
+   * @param changedOptionId - ID of the option that changed
+   * @param newValue - New value for the changed option
+   * @returns Updated options object
+   */
+  const updateControlledOptions = (
+    currentOptions: Record<string, string>,
+    changedOptionId: string,
+    newValue: string,
+  ): Record<string, string> => {
+    // Create new options object with the changed option
+    const newOptions = { ...currentOptions };
+    newOptions[changedOptionId] = newValue;
+
+    // Get all option IDs in order
+    const allOptionIds = product.options?.map((option) => option.id) || [];
+
+    // Find the index of the changed option
+    const changedOptionIndex = allOptionIds.indexOf(changedOptionId);
+
+    // Get all options that come after the changed one
+    const subsequentOptionIds = changedOptionIndex >= 0 ? allOptionIds.slice(changedOptionIndex + 1) : [];
+
+    // Reset all subsequent options to their first available value
+    if (subsequentOptionIds.length > 0) {
+      // For each subsequent option, find available values based on current selections
+      subsequentOptionIds.forEach((optionId) => {
+        if (!optionId) return;
+
+        // Get filtered option values for this option
+        const filteredValues = getFilteredOptionValues(product, newOptions, optionId);
+
+        if (filteredValues.length > 0) {
+          // Set to first available value
+          newOptions[optionId] = filteredValues[0].value;
+        } else {
+          // No valid options, set to empty
+          newOptions[optionId] = '';
+        }
+      });
+    }
+
+    return newOptions;
+  };
+
   const handleOptionChangeBySelect = (e: ChangeEvent<HTMLInputElement>) => {
-    setControlledOptions({
-      ...controlledOptions,
-      [e.target.name.replace('options.', '')]: e.target.value,
-    });
+    const changedOptionId = e.target.name.replace('options.', '');
+    const newValue = e.target.value;
+    const newOptions = updateControlledOptions(controlledOptions, changedOptionId, newValue);
+    setControlledOptions(newOptions);
   };
 
   const handleOptionChangeByRadio = (name: string, value: string) => {
-    setControlledOptions({
-      ...controlledOptions,
-      [name]: value,
-    });
+    const newOptions = updateControlledOptions(controlledOptions, name, value);
+    setControlledOptions(newOptions);
   };
 
   useEffect(() => {
@@ -239,6 +316,11 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
       setControlledOptions(defaultValues.options);
     }
   }, [defaultValues.options, controlledOptions]);
+
+  useEffect(() => {
+    // Initialize controlledOptions with defaultValues.options
+    setControlledOptions(defaultValues.options);
+  }, [defaultValues.options]);
 
   const soldOut = variantIsSoldOut(selectedVariant) || productSoldOut;
 
@@ -271,7 +353,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                 <div className="md:py-6">
                   <Grid className="!gap-0">
                     <GridColumn className="mb-8 md:col-span-6 lg:col-span-7 xl:pr-16 xl:pl-9">
-                      <ProductImageGallery product={product} />
+                      <ProductImageGallery key={product.id} product={product} />
                     </GridColumn>
 
                     <GridColumn className="flex flex-col md:col-span-6 lg:col-span-5">
@@ -279,7 +361,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                         <div>
                           <Breadcrumbs className="mb-6 text-primary" breadcrumbs={breadcrumbs} />
 
-                          <header className="flex gap-4">
+                          <header className="flex gap-4 mb-2">
                             <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:tracking-tight">
                               {product.title}
                             </h1>
@@ -326,6 +408,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                                   option={option}
                                   value={controlledOptions[option.id]}
                                   onChange={handleOptionChangeBySelect}
+                                  currencyCode={currencyCode}
                                 />
                               ))}
                             </FieldGroup>
@@ -344,6 +427,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                                   option={option}
                                   value={controlledOptions[option.id]}
                                   onChange={handleOptionChangeByRadio}
+                                  currencyCode={currencyCode}
                                 />
                               </div>
                             ))}
