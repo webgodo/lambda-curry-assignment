@@ -115,7 +115,7 @@ const CartDrawerFooter: FC<{
     <div className="mt-6">
       <Button
         variant="primary"
-        disabled={itemCount === 0 || isRemovingLastItem || (!isAddingItem && itemCount === 0)}
+        disabled={itemCount === 0 || isRemovingLastItem}
         onClick={onCheckout}
         className="h-12 w-full !text-base font-bold"
       >

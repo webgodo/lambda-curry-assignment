@@ -215,9 +215,6 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
     if (!isAddingToCart && !hasErrors) {
       // Only reset the form fields, not the controlled options
       if (formRef.current) {
-        // Create a new FormData from the current form
-        const formData = new FormData(formRef.current);
-
         // Reset the form to clear validation states
         formRef.current.reset();
 
