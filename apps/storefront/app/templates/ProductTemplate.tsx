@@ -17,7 +17,7 @@ import { Share } from '@app/components/share';
 import { Link, useFetcher } from '@remix-run/react';
 import { withYup } from '@remix-validated-form/with-yup';
 import truncate from 'lodash/truncate';
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, useCallback } from 'react';
 import * as Yup from 'yup';
 import { ProductOptionSelectorSelect } from '@app/components/product/ProductOptionSelectorSelect';
 import { LineItemActions } from '@app/routes/api.cart.line-items';
@@ -122,7 +122,13 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
   const { toggleCartDrawer } = useCart();
   const { region } = useRegion();
   const hasErrors = Object.keys(addToCartFetcher.data?.fieldErrors || {}).length > 0;
-  const isSubmitting = ['submitting', 'loading'].includes(addToCartFetcher.state);
+
+  // Detect form submission as early as possible
+  const isFormSubmitting = addToCartFetcher.formAction?.includes('/api/cart/line-items');
+
+  // Combine both states to detect adding items as early as possible
+  const isAddingToCart = isFormSubmitting || ['submitting', 'loading'].includes(addToCartFetcher.state);
+
   const validator = getAddToCartValidator(product);
 
   const defaultValues: AddToCartFormValues = {
@@ -206,12 +212,47 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
   };
 
   useEffect(() => {
-    if (!isSubmitting && !hasErrors) {
-      formRef.current?.reset();
-    }
-  }, [isSubmitting, hasErrors]);
+    if (!isAddingToCart && !hasErrors) {
+      // Only reset the form fields, not the controlled options
+      if (formRef.current) {
+        // Create a new FormData from the current form
+        const formData = new FormData(formRef.current);
 
+        // Reset the form to clear validation states
+        formRef.current.reset();
+
+        // Re-set the quantity field to 1
+        const quantityInput = formRef.current.querySelector('input[name="quantity"]') as HTMLInputElement;
+        if (quantityInput) {
+          quantityInput.value = '1';
+        }
+
+        // Keep the hidden productId field
+        const productIdInput = formRef.current.querySelector('input[name="productId"]') as HTMLInputElement;
+        if (productIdInput) {
+          productIdInput.value = product.id!;
+        }
+      }
+    }
+  }, [isAddingToCart, hasErrors, product.id]);
+
+<<<<<<< Updated upstream
+=======
+  useEffect(() => {
+    // Initialize controlledOptions with defaultValues.options only on initial load
+    if (Object.keys(controlledOptions).length === 0) {
+      setControlledOptions(defaultValues.options);
+    }
+  }, [defaultValues.options, controlledOptions]);
+
+>>>>>>> Stashed changes
   const soldOut = variantIsSoldOut(selectedVariant) || productSoldOut;
+
+  // Use useCallback for the form submission handler
+  const handleAddToCart = useCallback(() => {
+    // Open cart drawer
+    toggleCartDrawer(true);
+  }, [toggleCartDrawer]);
 
   return (
     <>
@@ -226,9 +267,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
           subaction={LineItemActions.CREATE}
           defaultValues={defaultValues}
           validator={validator}
-          onSubmit={() => {
-            toggleCartDrawer(true);
-          }}
+          onSubmit={handleAddToCart}
         >
           <input type="hidden" name="productId" value={product.id} />
 
@@ -325,7 +364,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                             <div className="flex-1">
                               {!soldOut ? (
                                 <SubmitButton className="!h-12 w-full whitespace-nowrap !text-base !font-bold">
-                                  {isSubmitting ? 'Adding...' : 'Add to cart'}
+                                  {isAddingToCart ? 'Adding...' : 'Add to cart'}
                                 </SubmitButton>
                               ) : (
                                 <SubmitButton
@@ -391,7 +430,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
               </GridColumn>
             </Grid>
           </Container>
-        </Form>{' '}
+        </Form>
       </section>
     </>
   );
