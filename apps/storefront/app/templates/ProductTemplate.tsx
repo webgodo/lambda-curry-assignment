@@ -223,12 +223,20 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
 
   const productSoldOut = useProductInventory(product).averageInventory === 0;
 
-  const handleOptionChangeBySelect = (e: ChangeEvent<HTMLInputElement>) => {
-    const changedOptionId = e.target.name.replace('options.', '');
-    const newValue = e.target.value;
-
+  /**
+   * Updates controlled options based on a changed option and resets subsequent options
+   * @param currentOptions - Current controlled options
+   * @param changedOptionId - ID of the option that changed
+   * @param newValue - New value for the changed option
+   * @returns Updated options object
+   */
+  const updateControlledOptions = (
+    currentOptions: Record<string, string>,
+    changedOptionId: string,
+    newValue: string,
+  ): Record<string, string> => {
     // Create new options object with the changed option
-    const newOptions = { ...controlledOptions };
+    const newOptions = { ...currentOptions };
     newOptions[changedOptionId] = newValue;
 
     // Get all option IDs in order
@@ -259,42 +267,18 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
       });
     }
 
+    return newOptions;
+  };
+
+  const handleOptionChangeBySelect = (e: ChangeEvent<HTMLInputElement>) => {
+    const changedOptionId = e.target.name.replace('options.', '');
+    const newValue = e.target.value;
+    const newOptions = updateControlledOptions(controlledOptions, changedOptionId, newValue);
     setControlledOptions(newOptions);
   };
 
   const handleOptionChangeByRadio = (name: string, value: string) => {
-    // Create new options object with the changed option
-    const newOptions = { ...controlledOptions };
-    newOptions[name] = value;
-
-    // Get all option IDs in order
-    const allOptionIds = product.options?.map((option) => option.id) || [];
-
-    // Find the index of the changed option
-    const changedOptionIndex = allOptionIds.indexOf(name);
-
-    // Get all options that come after the changed one
-    const subsequentOptionIds = changedOptionIndex >= 0 ? allOptionIds.slice(changedOptionIndex + 1) : [];
-
-    // Reset all subsequent options to their first available value
-    if (subsequentOptionIds.length > 0) {
-      // For each subsequent option, find available values based on current selections
-      subsequentOptionIds.forEach((optionId) => {
-        if (!optionId) return;
-
-        // Get filtered option values for this option
-        const filteredValues = getFilteredOptionValues(product, newOptions, optionId);
-
-        if (filteredValues.length > 0) {
-          // Set to first available value
-          newOptions[optionId] = filteredValues[0].value;
-        } else {
-          // No valid options, set to empty
-          newOptions[optionId] = '';
-        }
-      });
-    }
-
+    const newOptions = updateControlledOptions(controlledOptions, name, value);
     setControlledOptions(newOptions);
   };
 
