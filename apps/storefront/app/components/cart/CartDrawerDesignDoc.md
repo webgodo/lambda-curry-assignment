@@ -147,13 +147,6 @@ By adopting this simplified approach, we create a cart drawer system that is:
 - **More Predictable**: Clearer state transitions
 - **More Performant**: Fewer re-renders and better state management
 
-## Future Improvements
-
-- **Optimistic UI Updates**: Show changes immediately before API confirms them.
-- **Persistent Cart State**: Save cart state to localStorage for persistence across sessions.
-- **Animation Coordination**: Ensure animations complete before state changes finalize.
-- **Accessibility Improvements**: Ensure keyboard navigation and screen reader compatibility.
-
 ---
 
 By following this design approach, we create a cart drawer system that is:
