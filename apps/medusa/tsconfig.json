@@ -25,6 +25,12 @@
   "ts-node": {
     "swc": true
   },
-  "include": ["**/*", ".medusa/types/*"],
-  "exclude": ["node_modules", ".medusa/server", ".medusa/admin", ".cache", "public"]
+  "include": ["**/*", ".medusa/types/*", "*.d.ts"],
+  "exclude": [
+    "node_modules",
+    ".medusa/server",
+    ".medusa/admin",
+    ".cache",
+    "public"
+  ]
 }

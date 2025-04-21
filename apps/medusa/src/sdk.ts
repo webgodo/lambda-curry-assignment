@@ -1,4 +1,3 @@
-/// <reference types="vite/types/importMeta.d.ts" />
 import Medusa from "@medusajs/js-sdk"
 
 export const sdk = new Medusa({

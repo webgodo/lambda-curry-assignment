@@ -12,7 +12,7 @@ const ProductCustomizable = ({
 
   // Determine if the product is customizable from metadata
   const isCustomizable =
-    !!product.metadata[PRODUCT_METADATA_KEYS.IS_CUSTOMIZABLE];
+    !!product.metadata?.[PRODUCT_METADATA_KEYS.IS_CUSTOMIZABLE];
 
   const { mutateAsync: updateProduct, isPending } = useMutation({
     mutationFn: (newValue: boolean) =>
