@@ -1,28 +1,37 @@
-import { type ActionHandler, handleAction } from '@libs/util/handleAction.server';
-import { getVariantBySelectedOptions } from '@libs/util/products';
-import { setCartId } from '@libs/util/server/cookies.server';
-import { addToCart, deleteLineItem, retrieveCart, updateLineItem } from '@libs/util/server/data/cart.server';
-import { getProductsById } from '@libs/util/server/data/products.server';
-import { getSelectedRegion } from '@libs/util/server/data/regions.server';
-import { FormValidationError } from '@libs/util/validation/validation-error';
-import { StoreCart, StoreCartResponse } from '@medusajs/types';
-import type { ActionFunctionArgs } from '@remix-run/node';
-import { data as remixData } from '@remix-run/node';
-import { withYup } from '@remix-validated-form/with-yup';
-import * as Yup from 'yup';
+import { LINE_ITEM_METADATA_KEYS, PRODUCT_METADATA_KEYS } from "@lc/shared";
+import {
+  type ActionHandler,
+  handleAction,
+} from "@libs/util/handleAction.server";
+import { getVariantBySelectedOptions } from "@libs/util/products";
+import { setCartId } from "@libs/util/server/cookies.server";
+import {
+  addToCart,
+  deleteLineItem,
+  retrieveCart,
+  updateLineItem,
+} from "@libs/util/server/data/cart.server";
+import { getProductsById } from "@libs/util/server/data/products.server";
+import { getSelectedRegion } from "@libs/util/server/data/regions.server";
+import { FormValidationError } from "@libs/util/validation/validation-error";
+import { StoreCart, StoreCartResponse } from "@medusajs/types";
+import type { ActionFunctionArgs } from "@remix-run/node";
+import { data as remixData } from "@remix-run/node";
+import { withYup } from "@remix-validated-form/with-yup";
+import * as Yup from "yup";
 
 export const addCartItemValidation = withYup(
   Yup.object().shape({
     productId: Yup.string().required(),
     options: Yup.object().default({}),
     quantity: Yup.number().required(),
-  }),
+  })
 );
 
 export enum LineItemActions {
-  CREATE = 'createItem',
-  UPDATE = 'updateItem',
-  DELETE = 'deleteItem',
+  CREATE = "createItem",
+  UPDATE = "updateItem",
+  DELETE = "deleteItem",
 }
 
 export interface CreateLineItemPayLoad {
@@ -30,6 +39,7 @@ export interface CreateLineItemPayLoad {
   productId: string;
   options: { [key: string]: string };
   quantity: string;
+  customMessage?: string;
 }
 
 export interface UpdateLineItemRequestPayload {
@@ -45,12 +55,15 @@ export interface DeleteLineItemRequestPayload {
 
 export interface LineItemRequestResponse extends StoreCartResponse {}
 
-const createItem: ActionHandler<{ cart: StoreCart }> = async (payload: CreateLineItemPayLoad, { request }) => {
+const createItem: ActionHandler<{ cart: StoreCart }> = async (
+  payload: CreateLineItemPayLoad,
+  { request }
+) => {
   const result = await addCartItemValidation.validate(payload);
 
   if (result.error) throw new FormValidationError(result.error);
 
-  const { productId, options, quantity } = payload;
+  const { productId, options, quantity, customMessage } = payload;
 
   const region = await getSelectedRegion(request.headers);
 
@@ -61,7 +74,7 @@ const createItem: ActionHandler<{ cart: StoreCart }> = async (payload: CreateLin
 
   if (!product)
     throw new FormValidationError({
-      fieldErrors: { formError: 'Product not found.' },
+      fieldErrors: { formError: "Product not found." },
     });
 
   const variant = getVariantBySelectedOptions(product.variants || [], options);
@@ -69,15 +82,32 @@ const createItem: ActionHandler<{ cart: StoreCart }> = async (payload: CreateLin
   if (!variant)
     throw new FormValidationError({
       fieldErrors: {
-        formError: 'Product variant not found. Please select all required options.',
+        formError:
+          "Product variant not found. Please select all required options.",
       },
     });
+
+  // if product is set as customizable, then we expect a custom message
+  if (
+    !!product.metadata?.[PRODUCT_METADATA_KEYS.IS_CUSTOMIZABLE] &&
+    !customMessage
+  ) {
+    throw new FormValidationError({
+      fieldErrors: {
+        customMessage:
+          "Please write a custom message to be printed on the mug.",
+      },
+    });
+  }
 
   const responseHeaders = new Headers();
 
   const { cart } = await addToCart(request, {
     variantId: variant.id!,
     quantity: parseInt(quantity, 10),
+    metadata: customMessage
+      ? { [LINE_ITEM_METADATA_KEYS.CUSTOM_MESSAGE]: customMessage }
+      : undefined,
   });
 
   await setCartId(responseHeaders, cart.id);
@@ -87,7 +117,7 @@ const createItem: ActionHandler<{ cart: StoreCart }> = async (payload: CreateLin
 
 const updateItem: ActionHandler<StoreCartResponse> = async (
   { lineItemId, cartId, quantity }: UpdateLineItemRequestPayload,
-  { request },
+  { request }
 ) => {
   return await updateLineItem(request, {
     lineId: lineItemId,
@@ -97,7 +127,7 @@ const updateItem: ActionHandler<StoreCartResponse> = async (
 
 const deleteItem: ActionHandler<StoreCartResponse> = async (
   { lineItemId, cartId }: DeleteLineItemRequestPayload,
-  { request },
+  { request }
 ) => {
   await deleteLineItem(request, lineItemId);
 

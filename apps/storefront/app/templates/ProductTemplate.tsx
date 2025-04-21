@@ -1,41 +1,64 @@
-import HomeIcon from '@heroicons/react/24/solid/HomeIcon';
-import { useCart } from '@app/hooks/useCart';
-import { useRegion } from '@app/hooks/useRegion';
-import { ProductImageGallery } from '@app/components/product/ProductImageGallery';
-import { ProductPrice } from '@app/components/product/ProductPrice';
-import { ProductPriceRange } from '@app/components/product/ProductPriceRange';
-import { Breadcrumb, Breadcrumbs } from '@app/components/common/breadcrumbs/Breadcrumbs';
-import { Button } from '@app/components/common/buttons/Button';
-import { SubmitButton } from '@app/components/common/buttons/SubmitButton';
-import { Container } from '@app/components/common/container/Container';
-import { Form } from '@app/components/common/forms/Form';
-import { FormError } from '@app/components/common/forms/FormError';
-import { FieldGroup } from '@app/components/common/forms/fields/FieldGroup';
-import { Grid } from '@app/components/common/grid/Grid';
-import { GridColumn } from '@app/components/common/grid/GridColumn';
-import { Share } from '@app/components/share';
-import { Link, useFetcher } from '@remix-run/react';
-import { withYup } from '@remix-validated-form/with-yup';
-import truncate from 'lodash/truncate';
-import { useEffect, useMemo, useRef, useState, type ChangeEvent, useCallback } from 'react';
-import * as Yup from 'yup';
-import { ProductOptionSelectorSelect } from '@app/components/product/ProductOptionSelectorSelect';
-import { LineItemActions } from '@app/routes/api.cart.line-items';
+import HomeIcon from "@heroicons/react/24/solid/HomeIcon";
+import { useCart } from "@app/hooks/useCart";
+import { useRegion } from "@app/hooks/useRegion";
+import { ProductImageGallery } from "@app/components/product/ProductImageGallery";
+import { ProductPrice } from "@app/components/product/ProductPrice";
+import { ProductPriceRange } from "@app/components/product/ProductPriceRange";
+import {
+  Breadcrumb,
+  Breadcrumbs,
+} from "@app/components/common/breadcrumbs/Breadcrumbs";
+import { Button } from "@app/components/common/buttons/Button";
+import { SubmitButton } from "@app/components/common/buttons/SubmitButton";
+import { Container } from "@app/components/common/container/Container";
+import { Form } from "@app/components/common/forms/Form";
+import { FormError } from "@app/components/common/forms/FormError";
+import { FieldGroup } from "@app/components/common/forms/fields/FieldGroup";
+import { Grid } from "@app/components/common/grid/Grid";
+import { GridColumn } from "@app/components/common/grid/GridColumn";
+import { Share } from "@app/components/share";
+import { Link, useFetcher } from "@remix-run/react";
+import { withYup } from "@remix-validated-form/with-yup";
+import truncate from "lodash/truncate";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+  useCallback,
+} from "react";
+import * as Yup from "yup";
+import { ProductOptionSelectorSelect } from "@app/components/product/ProductOptionSelectorSelect";
+import { LineItemActions } from "@app/routes/api.cart.line-items";
 import {
   getFilteredOptionValues,
   getOptionValuesWithDiscountLabels,
   selectVariantFromMatrixBySelectedOptions,
   selectVariantMatrix,
-} from '@libs/util/products';
-import { useProductInventory } from '@app/hooks/useProductInventory';
-import { FieldLabel } from '@app/components/common/forms/fields/FieldLabel';
-import { ProductOptionSelectorRadio } from '@app/components/product/ProductOptionSelectorRadio';
-import { QuantitySelector } from '@app/components/common/field-groups/QuantitySelector';
-import { StoreProduct, StoreProductOptionValue, StoreProductVariant } from '@medusajs/types';
-import { Validator } from 'remix-validated-form';
-import { StoreProductReview, StoreProductReviewStats } from '@lambdacurry/medusa-plugins-sdk';
-import { ProductReviewStars } from '@app/components/reviews/ProductReviewStars';
-import { formatPrice, getCheapestProductVariant, getVariantFinalPrice } from '@libs/util/prices';
+} from "@libs/util/products";
+import { useProductInventory } from "@app/hooks/useProductInventory";
+import { FieldLabel } from "@app/components/common/forms/fields/FieldLabel";
+import { ProductOptionSelectorRadio } from "@app/components/product/ProductOptionSelectorRadio";
+import { QuantitySelector } from "@app/components/common/field-groups/QuantitySelector";
+import {
+  StoreProduct,
+  StoreProductOptionValue,
+  StoreProductVariant,
+} from "@medusajs/types";
+import { Validator } from "remix-validated-form";
+import {
+  StoreProductReview,
+  StoreProductReviewStats,
+} from "@lambdacurry/medusa-plugins-sdk";
+import { ProductReviewStars } from "@app/components/reviews/ProductReviewStars";
+import {
+  formatPrice,
+  getCheapestProductVariant,
+  getVariantFinalPrice,
+} from "@libs/util/prices";
+import { PRODUCT_METADATA_KEYS } from "@lc/shared";
+import { FieldText } from "@app/components/common/forms/fields/FieldText";
 
 export interface AddToCartFormValues {
   productId: string;
@@ -43,6 +66,7 @@ export interface AddToCartFormValues {
   options: {
     [key: string]: string;
   };
+  customMessage?: string;
 }
 
 /**
@@ -50,25 +74,35 @@ export interface AddToCartFormValues {
  * @param product - The product to create the validator for
  * @returns A validator for the add to cart form
  */
-export const getAddToCartValidator = (product: StoreProduct): Validator<AddToCartFormValues> => {
-  const optionsValidation = product.options!.reduce(
-    (acc, option) => {
-      if (!option.id) return acc;
+export const getAddToCartValidator = (
+  product: StoreProduct
+): Validator<AddToCartFormValues> => {
+  const isCustomizable =
+    !!product.metadata?.[PRODUCT_METADATA_KEYS.IS_CUSTOMIZABLE];
+  const customMessageSchema = isCustomizable
+    ? Yup.string()
+        .required("Please write a message to be printed on the mug!")
+        .max(40, "The message has to be 40 characters max! Short but sweet ;)")
+    : Yup.string().optional();
 
-      acc[option.id] = Yup.string().required(`${option.title} is required`);
+  const optionsValidation = product.options!.reduce((acc, option) => {
+    if (!option.id) return acc;
 
-      return acc;
-    },
-    {} as { [key: string]: Yup.Schema<string> },
-  );
+    acc[option.id] = Yup.string().required(`${option.title} is required`);
+
+    return acc;
+  }, {} as { [key: string]: Yup.Schema<string> });
 
   const schemaShape: Record<keyof AddToCartFormValues, Yup.AnySchema> = {
-    productId: Yup.string().required('Product ID is required'),
+    productId: Yup.string().required("Product ID is required"),
     quantity: Yup.number().optional(),
     options: Yup.object().shape(optionsValidation),
+    customMessage: customMessageSchema,
   };
 
-  return withYup(Yup.object().shape(schemaShape)) as Validator<AddToCartFormValues>;
+  return withYup(
+    Yup.object().shape(schemaShape)
+  ) as Validator<AddToCartFormValues>;
 };
 
 /**
@@ -88,8 +122,8 @@ const getBreadcrumbs = (product: StoreProduct) => {
       url: `/`,
     },
     {
-      label: 'All Products',
-      url: '/products',
+      label: "All Products",
+      url: "/products",
     },
   ];
 
@@ -114,22 +148,36 @@ export interface ProductTemplateProps {
  * @param variant - The variant to check
  * @returns True if the variant is sold out, false otherwise
  */
-const variantIsSoldOut: (variant: StoreProductVariant | undefined) => boolean = (variant) => {
+const variantIsSoldOut: (
+  variant: StoreProductVariant | undefined
+) => boolean = (variant) => {
   return !!(variant?.manage_inventory && variant?.inventory_quantity! < 1);
 };
 
-export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductTemplateProps) => {
+export const ProductTemplate = ({
+  product,
+  reviewsCount,
+  reviewStats,
+}: ProductTemplateProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const addToCartFetcher = useFetcher<any>();
   const { toggleCartDrawer } = useCart();
   const { region } = useRegion();
-  const hasErrors = Object.keys(addToCartFetcher.data?.fieldErrors || {}).length > 0;
+  const hasErrors =
+    Object.keys(addToCartFetcher.data?.fieldErrors || {}).length > 0;
+
+  const isCustomizable =
+    !!product.metadata?.[PRODUCT_METADATA_KEYS.IS_CUSTOMIZABLE];
 
   // Detect form submission as early as possible
-  const isFormSubmitting = addToCartFetcher.formAction?.includes('/api/cart/line-items');
+  const isFormSubmitting = addToCartFetcher.formAction?.includes(
+    "/api/cart/line-items"
+  );
 
   // Combine both states to detect adding items as early as possible
-  const isAddingToCart = isFormSubmitting || ['submitting', 'loading'].includes(addToCartFetcher.state);
+  const isAddingToCart =
+    isFormSubmitting ||
+    ["submitting", "loading"].includes(addToCartFetcher.state);
 
   const validator = getAddToCartValidator(product);
 
@@ -142,42 +190,41 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
 
       if (firstVariant && firstVariant.options) {
         // Create options object from the first variant
-        return firstVariant.options.reduce(
-          (acc, option) => {
-            if (option.option_id && option.value) {
-              acc[option.option_id] = option.value;
-            }
-            return acc;
-          },
-          {} as Record<string, string>,
-        );
+        return firstVariant.options.reduce((acc, option) => {
+          if (option.option_id && option.value) {
+            acc[option.option_id] = option.value;
+          }
+          return acc;
+        }, {} as Record<string, string>);
       }
 
       // Fallback to first option values if no variants
       return (
-        product.options?.reduce(
-          (acc, option) => {
-            if (!option.id || !option.values?.length) return acc;
-            acc[option.id] = option.values[0].value;
-            return acc;
-          },
-          {} as Record<string, string>,
-        ) || {}
+        product.options?.reduce((acc, option) => {
+          if (!option.id || !option.values?.length) return acc;
+          acc[option.id] = option.values[0].value;
+          return acc;
+        }, {} as Record<string, string>) || {}
       );
     }, [product]),
   };
 
   const breadcrumbs = getBreadcrumbs(product);
   const currencyCode = region.currency_code;
-  const [controlledOptions, setControlledOptions] = useState<Record<string, string>>(defaultValues.options);
+  const [controlledOptions, setControlledOptions] = useState<
+    Record<string, string>
+  >(defaultValues.options);
   const selectedOptions = useMemo(
     () => product.options?.map(({ id }) => controlledOptions[id]),
-    [product, controlledOptions],
+    [product, controlledOptions]
   );
 
   const variantMatrix = useMemo(() => selectVariantMatrix(product), [product]);
   const selectedVariant = useMemo(() => {
-    return selectVariantFromMatrixBySelectedOptions(variantMatrix, selectedOptions);
+    return selectVariantFromMatrixBySelectedOptions(
+      variantMatrix,
+      selectedOptions
+    );
   }, [variantMatrix, selectedOptions]);
 
   const productSelectOptions = useMemo(
@@ -190,7 +237,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
             currencyCode,
             option.values || [],
             variantMatrix,
-            selectedOptions,
+            selectedOptions
           );
 
           return {
@@ -202,11 +249,17 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
         }
 
         // For subsequent options, filter based on previous selections
-        const filteredOptionValues = getFilteredOptionValues(product, controlledOptions, option.id);
+        const filteredOptionValues = getFilteredOptionValues(
+          product,
+          controlledOptions,
+          option.id
+        );
 
         // Only include option values that are available based on current selections
         const availableOptionValues = option.values?.filter((optionValue) =>
-          filteredOptionValues.some((filteredValue) => filteredValue.value === optionValue.value),
+          filteredOptionValues.some(
+            (filteredValue) => filteredValue.value === optionValue.value
+          )
         ) as StoreProductOptionValue[];
 
         const optionValuesWithPrices = getOptionValuesWithDiscountLabels(
@@ -214,7 +267,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
           currencyCode,
           availableOptionValues || [],
           variantMatrix,
-          selectedOptions,
+          selectedOptions
         );
 
         return {
@@ -224,7 +277,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
           values: optionValuesWithPrices,
         };
       }),
-    [product, controlledOptions, currencyCode, variantMatrix, selectedOptions],
+    [product, controlledOptions, currencyCode, variantMatrix, selectedOptions]
   );
 
   const productSoldOut = useProductInventory(product).averageInventory === 0;
@@ -239,7 +292,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
   const updateControlledOptions = (
     currentOptions: Record<string, string>,
     changedOptionId: string,
-    newValue: string,
+    newValue: string
   ): Record<string, string> => {
     // Create new options object with the changed option
     const newOptions = { ...currentOptions };
@@ -252,7 +305,8 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
     const changedOptionIndex = allOptionIds.indexOf(changedOptionId);
 
     // Get all options that come after the changed one
-    const subsequentOptionIds = changedOptionIndex >= 0 ? allOptionIds.slice(changedOptionIndex + 1) : [];
+    const subsequentOptionIds =
+      changedOptionIndex >= 0 ? allOptionIds.slice(changedOptionIndex + 1) : [];
 
     // Reset all subsequent options to their first available value
     if (subsequentOptionIds.length > 0) {
@@ -261,14 +315,18 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
         if (!optionId) return;
 
         // Get filtered option values for this option
-        const filteredValues = getFilteredOptionValues(product, newOptions, optionId);
+        const filteredValues = getFilteredOptionValues(
+          product,
+          newOptions,
+          optionId
+        );
 
         if (filteredValues.length > 0) {
           // Set to first available value
           newOptions[optionId] = filteredValues[0].value;
         } else {
           // No valid options, set to empty
-          newOptions[optionId] = '';
+          newOptions[optionId] = "";
         }
       });
     }
@@ -277,9 +335,13 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
   };
 
   const handleOptionChangeBySelect = (e: ChangeEvent<HTMLInputElement>) => {
-    const changedOptionId = e.target.name.replace('options.', '');
+    const changedOptionId = e.target.name.replace("options.", "");
     const newValue = e.target.value;
-    const newOptions = updateControlledOptions(controlledOptions, changedOptionId, newValue);
+    const newOptions = updateControlledOptions(
+      controlledOptions,
+      changedOptionId,
+      newValue
+    );
     setControlledOptions(newOptions);
   };
 
@@ -296,13 +358,17 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
         formRef.current.reset();
 
         // Re-set the quantity field to 1
-        const quantityInput = formRef.current.querySelector('input[name="quantity"]') as HTMLInputElement;
+        const quantityInput = formRef.current.querySelector(
+          'input[name="quantity"]'
+        ) as HTMLInputElement;
         if (quantityInput) {
-          quantityInput.value = '1';
+          quantityInput.value = "1";
         }
 
         // Keep the hidden productId field
-        const productIdInput = formRef.current.querySelector('input[name="productId"]') as HTMLInputElement;
+        const productIdInput = formRef.current.querySelector(
+          'input[name="productId"]'
+        ) as HTMLInputElement;
         if (productIdInput) {
           productIdInput.value = product.id!;
         }
@@ -359,7 +425,10 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                     <GridColumn className="flex flex-col md:col-span-6 lg:col-span-5">
                       <div className="px-0 sm:px-6 md:p-10 md:pt-0">
                         <div>
-                          <Breadcrumbs className="mb-6 text-primary" breadcrumbs={breadcrumbs} />
+                          <Breadcrumbs
+                            className="mb-6 text-primary"
+                            breadcrumbs={breadcrumbs}
+                          />
 
                           <header className="flex gap-4 mb-2">
                             <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:tracking-tight">
@@ -370,79 +439,112 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                               itemType="product"
                               shareData={{
                                 title: product.title,
-                                text: truncate(product.description || 'Check out this product', {
-                                  length: 200,
-                                  separator: ' ',
-                                }),
+                                text: truncate(
+                                  product.description ||
+                                    "Check out this product",
+                                  {
+                                    length: 200,
+                                    separator: " ",
+                                  }
+                                ),
                               }}
                             />
                           </header>
                         </div>
 
-                        <ProductReviewStars reviewsCount={reviewsCount} reviewStats={reviewStats} />
+                        <ProductReviewStars
+                          reviewsCount={reviewsCount}
+                          reviewStats={reviewStats}
+                        />
 
-                        <section aria-labelledby="product-information" className="mt-4">
+                        <section
+                          aria-labelledby="product-information"
+                          className="mt-4"
+                        >
                           <h2 id="product-information" className="sr-only">
                             Product information
                           </h2>
 
                           <p className="text-lg text-gray-900 sm:text-xl flex gap-3">
                             {selectedVariant ? (
-                              <ProductPrice product={product} variant={selectedVariant} currencyCode={currencyCode} />
+                              <ProductPrice
+                                product={product}
+                                variant={selectedVariant}
+                                currencyCode={currencyCode}
+                              />
                             ) : (
-                              <ProductPriceRange product={product} currencyCode={currencyCode} />
+                              <ProductPriceRange
+                                product={product}
+                                currencyCode={currencyCode}
+                              />
                             )}
                           </p>
                         </section>
 
-                        {productSelectOptions && productSelectOptions.length > 5 && (
-                          <section aria-labelledby="product-options" className="product-options">
-                            <h2 id="product-options" className="sr-only">
-                              Product options
-                            </h2>
+                        {productSelectOptions &&
+                          productSelectOptions.length > 5 && (
+                            <section
+                              aria-labelledby="product-options"
+                              className="product-options"
+                            >
+                              <h2 id="product-options" className="sr-only">
+                                Product options
+                              </h2>
 
-                            <FieldGroup>
-                              {productSelectOptions.map((option, optionIndex) => (
-                                <ProductOptionSelectorSelect
-                                  key={optionIndex}
-                                  option={option}
-                                  value={controlledOptions[option.id]}
-                                  onChange={handleOptionChangeBySelect}
-                                  currencyCode={currencyCode}
-                                />
-                              ))}
-                            </FieldGroup>
-                          </section>
-                        )}
+                              <FieldGroup>
+                                {productSelectOptions.map(
+                                  (option, optionIndex) => (
+                                    <ProductOptionSelectorSelect
+                                      key={optionIndex}
+                                      option={option}
+                                      value={controlledOptions[option.id]}
+                                      onChange={handleOptionChangeBySelect}
+                                      currencyCode={currencyCode}
+                                    />
+                                  )
+                                )}
+                              </FieldGroup>
+                            </section>
+                          )}
 
-                        {productSelectOptions && productSelectOptions.length <= 5 && (
-                          <section aria-labelledby="product-options" className="product-options my-6 grid gap-4">
-                            <h2 id="product-options" className="sr-only">
-                              Product options
-                            </h2>
-                            {productSelectOptions.map((option, optionIndex) => (
-                              <div key={optionIndex}>
-                                <FieldLabel className="mb-2">{option.title}</FieldLabel>
-                                <ProductOptionSelectorRadio
-                                  option={option}
-                                  value={controlledOptions[option.id]}
-                                  onChange={handleOptionChangeByRadio}
-                                  currencyCode={currencyCode}
-                                />
-                              </div>
-                            ))}
-                          </section>
-                        )}
+                        {productSelectOptions &&
+                          productSelectOptions.length <= 5 && (
+                            <section
+                              aria-labelledby="product-options"
+                              className="product-options my-6 grid gap-4"
+                            >
+                              <h2 id="product-options" className="sr-only">
+                                Product options
+                              </h2>
+                              {productSelectOptions.map(
+                                (option, optionIndex) => (
+                                  <div key={optionIndex}>
+                                    <FieldLabel className="mb-2">
+                                      {option.title}
+                                    </FieldLabel>
+                                    <ProductOptionSelectorRadio
+                                      option={option}
+                                      value={controlledOptions[option.id]}
+                                      onChange={handleOptionChangeByRadio}
+                                      currencyCode={currencyCode}
+                                    />
+                                  </div>
+                                )
+                              )}
+                            </section>
+                          )}
 
                         <FormError />
 
                         <div className="my-2 flex flex-col gap-2">
                           <div className="flex items-center gap-4 py-2">
-                            {!soldOut && <QuantitySelector variant={selectedVariant} />}
+                            {!soldOut && (
+                              <QuantitySelector variant={selectedVariant} />
+                            )}
                             <div className="flex-1">
                               {!soldOut ? (
                                 <SubmitButton className="!h-12 w-full whitespace-nowrap !text-base !font-bold">
-                                  {isAddingToCart ? 'Adding...' : 'Add to cart'}
+                                  {isAddingToCart ? "Adding..." : "Add to cart"}
                                 </SubmitButton>
                               ) : (
                                 <SubmitButton
@@ -454,6 +556,30 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                               )}
                             </div>
                           </div>
+
+                          {isCustomizable && (
+                            <div>
+                              <FieldGroup>
+                                <FieldText
+                                  inputProps={{
+                                    maxLength: 40,
+                                  }}
+                                  name="customMessage"
+                                  placeholder="You're my hero!"
+                                  label="What should we write on your mug?"
+                                />
+                                {addToCartFetcher.data?.fieldErrors
+                                  ?.customMessage && (
+                                  <p className="text-sm text-red-600">
+                                    {
+                                      addToCartFetcher.data.fieldErrors
+                                        .customMessage
+                                    }
+                                  </p>
+                                )}
+                              </FieldGroup>
+                            </div>
+                          )}
 
                           {!!product.description && (
                             <div className="mt-4">
@@ -469,18 +595,23 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                               <h3 className="mb-2">Categories</h3>
 
                               <ol className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                                {product.categories.map((category, categoryIndex) => (
-                                  <li key={categoryIndex}>
-                                    <Button
-                                      as={(buttonProps) => (
-                                        <Link to={`/categories/${category.handle}`} {...buttonProps} />
-                                      )}
-                                      className="!h-auto whitespace-nowrap !rounded !px-2 !py-1 !text-xs !font-bold"
-                                    >
-                                      {category.name}
-                                    </Button>
-                                  </li>
-                                ))}
+                                {product.categories.map(
+                                  (category, categoryIndex) => (
+                                    <li key={categoryIndex}>
+                                      <Button
+                                        as={(buttonProps) => (
+                                          <Link
+                                            to={`/categories/${category.handle}`}
+                                            {...buttonProps}
+                                          />
+                                        )}
+                                        className="!h-auto whitespace-nowrap !rounded !px-2 !py-1 !text-xs !font-bold"
+                                      >
+                                        {category.name}
+                                      </Button>
+                                    </li>
+                                  )
+                                )}
                               </ol>
                             </nav>
                           )}

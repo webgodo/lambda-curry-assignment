@@ -7,6 +7,7 @@ import { Link } from '@remix-run/react';
 import { FC } from 'react';
 import { StoreCart, StoreCartLineItem } from '@medusajs/types';
 import { useCheckout } from '@app/hooks/useCheckout';
+import { CartLineItemCustomMessageView } from '@app/components/product/ProductCustomMessage';
 
 export interface CheckoutOrderSummaryItemsProps {
   cart: StoreCart;
@@ -45,6 +46,7 @@ export const CheckoutOrderSummaryItem: FC<CheckoutOrderSummaryItemProps> = ({ it
               </Link>
             </h4>
             <p className="mt-0.5 text-sm text-gray-500">{item.variant_title}</p>
+            <CartLineItemCustomMessageView item={item} />
           </div>
 
           <div className="ml-4 flow-root flex-shrink-0">
