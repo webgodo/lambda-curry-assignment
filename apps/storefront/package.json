@@ -82,6 +82,7 @@
     "@headlessui/react": "^2.1.9",
     "@heroicons/react": "^2.0.18",
     "@lambdacurry/medusa-plugins-sdk": "0.0.5",
+    "@lc/shared": "*",
     "@loadable/component": "^5.15.3",
     "@medusajs/js-sdk": "2.7.0",
     "@radix-ui/react-slot": "^1.0.2",

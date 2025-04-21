@@ -3493,6 +3493,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lc/shared@npm:*, @lc/shared@workspace:packages/shared":
+  version: 0.0.0-use.local
+  resolution: "@lc/shared@workspace:packages/shared"
+  languageName: unknown
+  linkType: soft
+
 "@loadable/component@npm:^5.15.3":
   version: 5.16.4
   resolution: "@loadable/component@npm:5.16.4"
@@ -26413,6 +26419,7 @@ __metadata:
     "@headlessui/react": "npm:^2.1.9"
     "@heroicons/react": "npm:^2.0.18"
     "@lambdacurry/medusa-plugins-sdk": "npm:0.0.5"
+    "@lc/shared": "npm:*"
     "@loadable/component": "npm:^5.15.3"
     "@medusajs/js-sdk": "npm:2.7.0"
     "@medusajs/types": "npm:2.7.0"
