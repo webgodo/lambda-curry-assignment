@@ -1,9 +1,9 @@
 import { LINE_ITEM_METADATA_KEYS } from "@lc/shared";
-import { StoreCartLineItem } from "@medusajs/types";
+import { StoreCartLineItem, StoreOrderLineItem } from "@medusajs/types";
 import { FC } from "react";
 
 interface CartLineItemCustomMessageViewProps {
-  item: StoreCartLineItem;
+  item: StoreCartLineItem | StoreOrderLineItem;
 }
 
 export const CartLineItemCustomMessageView: FC<

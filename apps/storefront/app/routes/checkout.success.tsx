@@ -6,7 +6,8 @@ import { formatPrice } from '@libs/util/prices';
 import { LoaderFunctionArgs, redirect } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { retrieveOrder } from '@libs/util/server/data/orders.server';
-import { StoreOrder, StorePaymentCollection } from '@medusajs/types';
+import { StoreCartLineItem, StoreOrder, StoreOrderLineItem, StorePaymentCollection } from '@medusajs/types';
+import { CartLineItemCustomMessageView } from '@app/components/product/ProductCustomMessage';
 
 export const loader = async ({ request }: LoaderFunctionArgs): Promise<{ order: StoreOrder }> => {
   const url = new URL(request.url);
@@ -63,6 +64,7 @@ export default function CheckoutSuccessRoute() {
                         <Link to={`/products/${item.product_handle}`}>{item.product_title}</Link>
                       </h3>
                       <p className="text-sm font-normal text-gray-500">{item.variant_title}</p>
+                      <CartLineItemCustomMessageView item={item as StoreOrderLineItem} />
                     </div>
                     <div className="flex flex-1 items-end">
                       <span className="font-normal backdrop:text-gray-500">Qty {item.quantity}</span>
